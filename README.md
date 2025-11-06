@@ -1,2 +1,2 @@
-# HW4---SupplyEase
+# HW4
 SupplyEase Organization Diagram
