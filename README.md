@@ -3,7 +3,8 @@ SupplyEase Organization Diagram
 
 ```mermaid
 graph TD
-    A[Homepage] --> B(Create);
+
+    A[Homepage Internal] --> B(Create);
     A --> C(Status);
     A --> D(Bidding);
     A --> E(Supplier);
@@ -35,4 +36,31 @@ graph TD
     %% Account Menu
     G --> G1(Login / Signup);
     G --> G2(User Profile);
+    G --> G3(Log Out);
 ```
+```mermaid
+graph TD
+    H[Homepage Supplier]-->I(Account);
+    H --> J(Quotation);
+    H --> K(Expedition);
+    H --> L(Invoice);
+
+    %% Account
+    I --> I1(Update Company Information Request);
+    I --> I2(Update Supply Information Request);
+
+    %% Quotation
+    J --> J1(Submit Quotation);
+    J --> J2(Sourcing Project Status);
+    J --> J3(Purchase Order Recieved);
+
+    %% Expedition
+    K --> K1(Submit Expedition Status);
+    K --> K2(Update Expedition Status);
+
+    %% Invoicing
+    L --> L1(Submit Invoice);
+    L --> L2(Invoice Status);
+```
+
+
