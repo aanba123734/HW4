@@ -111,4 +111,9 @@ graph TD
     L --> L1(Submit Invoice);
     L --> L2(Invoice Status);
 ```
-
+```mermaid
+graph TD
+    %% Notes
+    N[Yellow] --> N1(MVP)
+    M[Green] --> M1(Additional)
+```
