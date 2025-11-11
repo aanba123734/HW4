@@ -3,8 +3,35 @@ SupplyEase Organization Diagram
 
 ```mermaid
 graph TD
+    %% Style Definitions
+    classDef homepage fill:#7B7B7B,stroke-width:2px,color:#fff
+    classDef greenBox fill:#009100,stroke-width:2px,color:#fff
+    classDef yellowBox fill:#A6A600,stroke-width:2px,color:#fff
+    classDef blueBox fill:#0072E3,stroke-width:2px,color:#fff
 
-    A[Homepage Internal] --> B(Create);
+    B1["Create Purchase Request"]:::greenBox
+    B2["Create Purchase Order"]:::yellowBox
+    B3["Create Material Code"]:::greenBox
+    B4["Create Expedite"]:::yellowBox
+    B5["Create Payment"]:::blueBox
+
+    C1["PR - PO Status"]:::greenBox
+    C2["Delivery Status"]:::yellowBox
+    C3["Payment Status"]:::blueBox
+    C4["Real-Time Statistics"]:::blueBox
+
+    D1["Sourcing Project"]:::yellowBox
+
+    E1["Supplier Information"]:::greenBox
+    E2["Supplier Request / Registration"]:::yellowBox
+    E3["Supplier Ranking / Grouping"]:::yellowBox
+    E4["Supplier Bidding History"]:::blueBox
+
+    G1["Login / Signup"]:::greenBox
+    G2["User Profile"]:::yellowBox
+    G3["Log Out"]:::greenBox
+
+    A[Homepage Internal]:::homepage --> B(Create);
     A --> C(Status);
     A --> D(Bidding);
     A --> E(Supplier);
@@ -37,10 +64,32 @@ graph TD
     G --> G1(Login / Signup);
     G --> G2(User Profile);
     G --> G3(Log Out);
+
+
 ```
 ```mermaid
 graph TD
-    H[Homepage Supplier]-->I(Account);
+    %% Style Definitions
+    classDef homepage fill:#7B7B7B,stroke-width:2px,color:#fff
+    classDef greenBox fill:#009100,stroke-width:2px,color:#fff
+    classDef yellowBox fill:#A6A600,stroke-width:2px,color:#fff
+    classDef blueBox fill:#0072E3,stroke-width:2px,color:#fff
+    classDef loginBox fill:#2d5016,stroke-width:3px,color:#fff
+
+    I1["Update Company Information Request"]:::greenBox
+    I2["Update Supply Information Request"]:::yellowBox
+    
+    J1["Submit Quotation"]:::greenBox
+    J2["Sourcing Project Status"]:::yellowBox
+    J3["Purchase Order Recieved"]:::yellowBox
+
+    K1["Submit Expedition Status"]:::blueBox
+    K2["Update Expedition Status"]:::blueBox
+
+    L1["Submit Invoice"]:::greenBox
+    L2["Invoice Status"]:::yellowBox
+
+    H[Homepage Supplier]:::homepage-->I(Account);
     H --> J(Quotation);
     H --> K(Expedition);
     H --> L(Invoice);
@@ -62,5 +111,4 @@ graph TD
     L --> L1(Submit Invoice);
     L --> L2(Invoice Status);
 ```
-
 
