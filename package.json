@@ -11,11 +11,15 @@
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
+    "bcrypt": "^6.0.0",
     "body-parser": "^2.2.0",
     "dotenv": "^17.2.3",
     "ejs": "^3.1.10",
     "express": "^5.1.0",
+    "express-session": "^1.18.2",
     "method-override": "^3.0.0",
-    "pg": "^8.16.3"
+    "multer": "^2.0.2",
+    "pg": "^8.16.3",
+    "xlsx": "^0.18.5"
   }
 }
