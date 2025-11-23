@@ -5,29 +5,11 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="/css/style.css" rel="stylesheet">
     <style>
-        /* 模仿你圖片中的選單樣式 */
-        .create-menu-list {
-            list-style: none;
-            padding: 0;
-            margin-top: 20px;
-        }
-        .create-menu-list li {
-            font-size: 2rem; /* 大字體 */
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
-        .create-menu-list a {
-            text-decoration: none;
-            color: #000; /* 黑色代表可點選 */
-            transition: color 0.3s;
-        }
-        .create-menu-list a:hover {
-            color: #8A2BE2; /* 紫色 hover */
-        }
-        .create-menu-list .disabled-option {
-            color: #B0B0B0; /* 灰色代表未實作 */
-            pointer-events: none; /* 禁止點選 */
-        }
+        .create-menu-list { list-style: none; padding: 0; margin-top: 20px; }
+        .create-menu-list li { font-size: 2rem; font-weight: bold; margin-bottom: 10px; }
+        .create-menu-list a { text-decoration: none; color: #000; transition: color 0.3s; }
+        .create-menu-list a:hover { color: #8A2BE2; }
+        .create-menu-list .disabled-option { color: #B0B0B0; pointer-events: none; }
     </style>
 </head>
 <body>
@@ -37,13 +19,9 @@
         <div class="row">
             <div class="col-md-8 offset-md-1">
                 <ul class="create-menu-list">
-                    <li>
-                        <a href="/create/pr">Create Purchase Request</a>
-                    </li>
-                    <li>
-                        <a href="/create/po">Create Purchase Order</a>
-                    </li>
-                    
+                    <li><a href="/create/pr">Create Purchase Request</a></li>
+                    <li><a href="/create/sr">Create Sourcing Request</a></li>
+                    <li><a href="/create/po">Create Purchase Order</a></li>
                     <li class="disabled-option">Create Material Code</li>
                     <li class="disabled-option">Create Expedite</li>
                     <li class="disabled-option">Create Payment</li>
@@ -51,5 +29,26 @@
             </div>
         </div>
     </div>
+
+    <script>
+        // 取得網址參數
+        const urlParams = new URLSearchParams(window.location.search);
+        const success = urlParams.get('success');
+        const msg = urlParams.get('msg');
+        const id = urlParams.get('id');
+
+        if (success === 'true') {
+            Swal.fire({
+                icon: 'success',
+                title: 'Success!',
+                text: `${msg} (ID: ${id})`,
+                confirmButtonColor: '#8A2BE2', // 紫色按鈕
+                confirmButtonText: 'Great!'
+            }).then(() => {
+                // 關閉視窗後清除網址參數，避免重新整理又跳出來
+                window.history.replaceState({}, document.title, "/create");
+            });
+        }
+    </script>
 </body>
 </html>

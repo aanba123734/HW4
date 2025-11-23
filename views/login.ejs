@@ -18,27 +18,22 @@
 </head>
 <body>
     <div class="login-box">
-        <h1 class="mb-4">LOGIN</h1>
+        <h1 class="mb-4">SUPPLY EASE</h1>
+        <p class="text-muted">Internal System Login</p>
+        
         <form action="/login" method="POST">
             <div class="mb-3">
-                <input type="text" name="username" class="form-control rounded-pill border-2 border-dark" placeholder="Account" required>
+                <input type="text" name="username" class="form-control rounded-pill border-2 border-dark" placeholder="Username (admin)" required>
             </div>
             <div class="mb-3">
                 <input type="password" name="password" class="form-control rounded-pill border-2 border-dark" placeholder="Password" required>
             </div>
-            <button type="submit" class="btn btn-retro">LOGIN</button>
+            <button type="submit" class="btn btn-retro w-100">LOGIN</button>
         </form>
-        <hr>
-        <p class="mt-3">Don't have an account?</p>
-        <form action="/signup" method="POST">
-            <input type="text" name="username" placeholder="New User" class="form-control mb-2" required>
-            <input type="password" name="password" placeholder="New Pass" class="form-control mb-2" required>
-            <select name="role" class="form-select mb-2">
-                <option value="supplier">Supplier</option>
-                <option value="admin">Admin</option>
-            </select>
-            <button class="btn btn-sm btn-secondary w-100">SIGNUP</button>
-        </form>
+        
+        <div class="mt-3 text-muted small">
+            *Default Admin: admin / admin123
+        </div>
     </div>
 </body>
 </html>

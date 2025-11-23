@@ -1,3 +1,5 @@
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <nav class="navbar navbar-expand-lg navbar-custom">
     <div class="container-fluid">
         <a class="navbar-brand" href="/">SUPPLYEASE.COM</a>
@@ -5,15 +7,24 @@
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item"><a class="nav-link" href="/">HOME</a></li>
                 <li class="nav-item"><a class="nav-link" href="/create">Create</a></li>
-                <li class="nav-item"><a class="nav-link" href="/status/delivery">Status</a></li>
+                <li class="nav-item"><a class="nav-link" href="/status">Status</a></li>
                 <li class="nav-item"><a class="nav-link" href="#">Bidding</a></li>
+                
                 <li class="nav-item"><a class="nav-link" href="/supplier">Supplier</a></li>
+                
                 <li class="nav-item"><a class="nav-link" href="#">HELP</a></li>
             </ul>
             <div class="d-flex align-items-center">
-                <span class="me-3 fw-bold">Hi, <%= user.username %> (<%= user.role %>)</span>
+                <span class="me-3 fw-bold text-white">Hi, <%= user.username %></span>
                 <a href="/logout" class="btn btn-sm btn-dark text-white rounded-pill">LOGOUT</a>
             </div>
         </div>
     </div>
 </nav>
+<% if (typeof currentPath !== 'undefined' && currentPath !== '/') { %>
+    <div class="container-fluid mt-2 px-4">
+        <a href="javascript:history.back()" class="btn btn-sm btn-light border-dark rounded-pill fw-bold" style="background-color: #E6E6FA;">
+            <i class="bi bi-arrow-left"></i> &larr; Back
+        </a>
+    </div>
+<% } %>

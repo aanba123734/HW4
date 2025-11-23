@@ -7,37 +7,103 @@
 </head>
 <body>
     <%- include('../partials/navbar') %>
-
     <div class="container mt-4">
-        <div class="status-box">
-            <h2>Create Purchase Order</h2>
-            <form action="/create/po" method="POST" class="mt-4">
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <label>PO Number</label>
-                        <input type="text" name="po_number" class="form-control border-dark" required>
-                    </div>
-                    <div class="col-md-6">
-                        <label>Supplier Name</label>
-                        <input type="text" name="supplier_name" class="form-control border-dark">
-                    </div>
+        <h2>Create Purchase Order</h2>
+        <div class="alert alert-info">PO Number will be Auto Generated.</div>
+
+        <!-- Tabs -->
+        <ul class="nav nav-tabs mb-3" id="poTabs" role="tablist">
+            <li class="nav-item">
+                <button class="nav-link active" id="manual-tab" data-bs-toggle="tab" data-bs-target="#manual" type="button">Manual Create</button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link" id="sr-tab" data-bs-toggle="tab" data-bs-target="#fromsr" type="button">From Sourcing Request</button>
+            </li>
+        </ul>
+
+        <div class="tab-content">
+            <!-- 1. Manual Create Tab -->
+            <div class="tab-pane fade show active" id="manual">
+                <div class="status-box">
+                    <form action="/create/po" method="POST">
+                        <div class="row mb-3">
+                            <div class="col-md-6"><label>Supplier Name</label><input type="text" name="supplier_name" class="form-control border-dark"></div>
+                            <div class="col-md-6"><label>Delivery Date</label><input type="date" name="delivery_date" class="form-control border-dark"></div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-4"><label>Material Code</label><input type="text" name="material_code" class="form-control border-dark"></div>
+                            <div class="col-md-4"><label>Material Name</label><input type="text" name="material_name" class="form-control border-dark"></div>
+                            <div class="col-md-4"><label>Quantity</label><input type="number" name="quantity" class="form-control border-dark" id="m_qty" oninput="calcM()"></div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6"><label>Unit Price</label><input type="number" name="unit_price" class="form-control border-dark" id="m_price" oninput="calcM()"></div>
+                            <div class="col-md-6"><label>Total Price</label><input type="number" name="total_amount" class="form-control border-dark" id="m_total" readonly></div>
+                        </div>
+                        <button type="submit" class="btn btn-retro rounded-pill">Create PO (Manual)</button>
+                    </form>
                 </div>
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <label>Total Amount</label>
-                        <input type="number" name="total_amount" class="form-control border-dark">
+            </div>
+
+            <!-- 2. From Sourcing Request Tab -->
+            <div class="tab-pane fade" id="fromsr">
+                <div class="status-box" style="background-color: #ffffcc;">
+                    <h5>Import from Sourcing Request</h5>
+                    <div class="input-group mb-3">
+                        <select id="srInput" class="form-select border-dark">
+                            <option value="" selected disabled>-- Select Sourcing Request --</option>
+                            <% srs.forEach(sr => { %>
+                                <option value="<%= sr.sr_number %>">
+                                    <%= sr.sr_number %> : <%= sr.title %> (Supplier: <%= sr.supplier_id %>)
+                                </option>
+                            <% }) %>
+                        </select>
+                        <button class="btn btn-dark" type="button" onclick="loadSR()">Load Data</button>
                     </div>
-                    <div class="col-md-6">
-                        <label>Delivery Date</label>
-                        <input type="date" name="delivery_date" class="form-control border-dark">
-                    </div>
+                    <form action="/create/po" method="POST">
+                        <input type="hidden" name="sr_reference" id="srRefField">
+                        <div class="row mb-3">
+                            <div class="col-md-6"><label>Supplier Name (ID)</label><input type="text" name="supplier_name" id="sr_supp" class="form-control border-dark" readonly></div>
+                            <div class="col-md-6"><label>Material Name</label><input type="text" name="material_name" id="sr_name" class="form-control border-dark" readonly></div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-4"><label>Material Code</label><input type="text" name="material_code" id="sr_code" class="form-control border-dark" readonly></div>
+                            <div class="col-md-4"><label>Quantity</label><input type="number" name="quantity" id="sr_qty" class="form-control border-dark" readonly></div>
+                            <div class="col-md-4"><label>Total Price</label><input type="number" name="total_amount" id="sr_total" class="form-control border-dark" readonly></div>
+                        </div>
+                         <div class="row mb-3">
+                             <div class="col-md-6"><label>Delivery Date</label><input type="date" name="delivery_date" class="form-control border-dark"></div>
+                         </div>
+                        <button type="submit" class="btn btn-retro rounded-pill">Create PO (From SR)</button>
+                    </form>
                 </div>
-                <div class="text-end">
-                    <a href="/create" class="btn btn-secondary rounded-pill px-4">CANCEL</a>
-                    <button type="submit" class="btn btn-retro rounded-pill px-4">SUBMIT</button>
-                </div>
-            </form>
+            </div>
         </div>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function calcM() {
+            const q = document.getElementById('m_qty').value;
+            const p = document.getElementById('m_price').value;
+            document.getElementById('m_total').value = q * p;
+        }
+
+        async function loadSR() {
+            const srId = document.getElementById('srInput').value;
+            try {
+                const res = await fetch('/api/sr/' + srId);
+                if (!res.ok) throw new Error('SR Not Found');
+                const data = await res.json();
+                
+                // Fill fields
+                document.getElementById('srRefField').value = data.sr_number;
+                document.getElementById('sr_supp').value = data.supplier_id;
+                document.getElementById('sr_name').value = data.material_desc;
+                document.getElementById('sr_code').value = data.material_code;
+                document.getElementById('sr_qty').value = data.quantity;
+                document.getElementById('sr_total').value = data.total_price;
+            } catch (err) { alert(err.message); }
+        }
+    </script>
 </body>
 </html>

@@ -22,34 +22,35 @@
 
         <div class="status-box">
             <h5>✏️ Manual Input</h5>
+            
+            <div class="alert alert-info">
+                <i class="bi bi-info-circle"></i> PR Number will be <strong>auto-generated</strong> by System after submission.
+            </div>
+
             <form action="/create/pr" method="POST">
                 <div class="row mb-3">
-                    <div class="col">
-                        <label>PR No.</label>
-                        <input type="text" name="pr_number" class="form-control border-dark" required>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Item Name</label>
+                        <input type="text" name="item_name" class="form-control border-dark" placeholder="e.g. Steel Beams" required>
                     </div>
-                    <div class="col">
-                        <label>Date</label>
-                        <input type="date" class="form-control border-dark">
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Material Code</label>
+                        <input type="text" name="material_code" class="form-control border-dark" placeholder="e.g. MAT-2025-001" required>
                     </div>
                 </div>
-                <table class="table table-bordered border-dark">
-                    <thead>
-                        <tr>
-                            <th>Item Name</th>
-                            <th>Quantity</th>
-                            <th>Budget</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><input type="text" name="item_name" class="form-control border-0"></td>
-                            <td><input type="number" name="quantity" class="form-control border-0"></td>
-                            <td><input type="number" name="budget" class="form-control border-0"></td>
-                        </tr>
-                    </tbody>
-                </table>
-                <div class="text-end">
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Quantity</label>
+                        <input type="number" name="quantity" class="form-control border-dark" min="1" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Budget ($)</label>
+                        <input type="number" name="budget" class="form-control border-dark" min="0" step="0.01">
+                    </div>
+                </div>
+
+                <div class="text-end mt-4">
                     <a href="/create" class="btn btn-secondary rounded-pill px-4">CANCEL</a>
                     <button type="submit" class="btn btn-retro rounded-pill px-4">SUBMIT</button>
                 </div>

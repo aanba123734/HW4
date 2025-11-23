@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Home</title>
+    <title>Dashboard</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="/css/style.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -13,36 +13,40 @@
         <h2 class="text-center mb-4">Real-Time Statistics</h2>
         
         <div class="row">
+            <!-- 1. Spending -->
             <div class="col-md-6 mb-4">
-                <div class="status-box">
-                    <h5>Sourcing Project Status</h5>
-                    <canvas id="prChart"></canvas>
+                <div class="status-box text-center py-5">
+                    <h4 class="text-secondary">Total Spending</h4>
+                    <h1 class="display-3 fw-bold text-success">$ <%= stats.spending.toLocaleString() %></h1>
+                    <p class="text-muted">Total Purchase Order Amount</p>
                 </div>
             </div>
+
+            <!-- 2. Sourcing Project Status -->
             <div class="col-md-6 mb-4">
                 <div class="status-box">
-                    <h5>Procurement Spend</h5>
-                    <h3>$ <%= stats.totalSpend %></h3>
-                    <p>Total PO Amount</p>
+                    <h5 class="text-center">Sourcing Project Status</h5>
+                    <canvas id="srChart"></canvas>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        const ctx = document.getElementById('prChart').getContext('2d');
-        // 把後端傳來的數據轉為 JSON
-        // const prData = <%- JSON.stringify(stats.pr) %>;
-        // 如果 stats.pr 存在就轉 JSON，否則給空陣列，避免錯誤
-        const prData = <%- (stats && stats.pr) ? JSON.stringify(stats.pr) : '[]' %>;
+        const ctx = document.getElementById('srChart').getContext('2d');
+        const srData = <%- (stats && stats.sr_status) ? JSON.stringify(stats.sr_status) : '[]' %>;
+        
+        // 處理數據
+        const labels = srData.map(d => d.status || 'Unknown');
+        const data = srData.map(d => d.count);
 
         new Chart(ctx, {
-            type: 'pie',
+            type: 'doughnut',
             data: {
-                labels: prData.map(d => d.status || 'Unknown'),
+                labels: labels,
                 datasets: [{
-                    data: prData.map(d => d.count),
-                    backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0']
+                    data: data,
+                    backgroundColor: ['#36A2EB', '#FF6384', '#FFCE56', '#4BC0C0']
                 }]
             }
         });
