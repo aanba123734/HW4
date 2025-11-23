@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>PR-PO Status</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/style.css" rel="stylesheet">
+</head>
+<body>
+    <%- include('../partials/navbar') %>
+
+    <div class="container mt-4">
+        <h2>PR - PO Process Status</h2>
+        
+        <div class="status-box mb-4">
+            <form action="/status/pr-po" method="GET" class="row align-items-end">
+                <div class="col-md-5">
+                    <label>Search (PR No, SR No, or PO No)</label>
+                    <input type="text" name="search" class="form-control border-dark rounded-pill" placeholder="e.g. PR-2025...">
+                </div>
+                <div class="col-md-2">
+                    <button class="btn btn-retro rounded-pill w-100">SEARCH</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-bordered border-dark table-retro text-center align-middle">
+                <thead>
+                    <tr class="table-secondary">
+                        <th>Purchase Request (PR)</th>
+                        <th>➔</th>
+                        <th>Sourcing Request (SR)</th>
+                        <th>➔</th>
+                        <th>Purchase Order (PO)</th>
+                        <th>Current Status</th>
+                        <th>Actions</th> </tr>
+                </thead>
+                <tbody>
+                    <% if (data.length === 0) { %>
+                        <tr><td colspan="7" class="text-center py-4 text-muted">No records found. Please create a PR first.</td></tr>
+                    <% } %>
+                    <% data.forEach(row => { %>
+                        <tr>
+                            <td class="text-start">
+                                <strong><%= row.pr_number %></strong><br>
+                                <small><%= row.item_name %></small><br>
+                                <span class="badge bg-secondary"><%= row.pr_status %></span>
+                            </td>
+                            <td>➜</td>
+                            <td>
+                                <% if(row.sr_number) { %>
+                                    <strong><%= row.sr_number %></strong><br>
+                                    <span class="badge bg-info text-dark"><%= row.sr_status %></span>
+                                <% } else { %>
+                                    <span class="text-muted">--</span>
+                                <% } %>
+                            </td>
+                            <td>➜</td>
+                            <td>
+                                <% if(row.po_number) { %>
+                                    <strong><%= row.po_number %></strong><br>
+                                    <span class="badge bg-primary"><%= row.po_status %></span>
+                                <% } else { %>
+                                    <span class="text-muted">--</span>
+                                <% } %>
+                            </td>
+                            <td>
+                                <% if(row.delivery_status) { %>
+                                    <% if(row.delivery_status === 'On Track') { %>
+                                        <span class="badge bg-warning text-dark">🚚 On Track</span>
+                                    <% } else if(row.delivery_status === 'Late') { %>
+                                        <span class="badge bg-danger">Late</span>
+                                    <% } else { %>
+                                        <span class="badge bg-success"><%= row.delivery_status %></span>
+                                    <% } %>
+                                <% } else if (row.po_number) { %>
+                                    <span class="badge bg-light text-dark border">Processing</span>
+                                <% } else { %>
+                                    <span class="text-muted">Pending PO</span>
+                                <% } %>
+                            </td>
+
+                            <td>
+                                <a href="/status/pr-po/<%= row.pr_id %>/edit" class="btn btn-sm btn-outline-primary mb-1">Edit</a>
+                                <form action="/status/pr-po/<%= row.pr_id %>?_method=DELETE" method="POST" onsubmit="return confirm('Delete?');" style="display:inline;">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">Del</button>
+                                </form>
+                            </td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('success') === 'true') {
+            Swal.fire({
+                icon: 'success',
+                title: 'Done!',
+                text: urlParams.get('msg'),
+                confirmButtonColor: '#8A2BE2'
+            }).then(() => window.history.replaceState({}, document.title, window.location.pathname));
+        }
+    </script>
+</body>
+</html>

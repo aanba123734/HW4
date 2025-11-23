@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Create Sourcing Request</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/style.css" rel="stylesheet">
+</head>
+<body>
+    <%- include('../partials/navbar') %>
+    <div class="container mt-4">
+        <div class="status-box">
+            <h2>Create Sourcing Request</h2>
+            <div class="alert alert-secondary">SR ID will be Generated (Auto)</div>
+            
+            <form action="/create/sr" method="POST">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label>Supplier ID</label>
+                        <input type="text" name="supplier_id" class="form-control border-dark" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label>Title</label>
+                        <input type="text" name="title" class="form-control border-dark" required>
+                    </div>
+                </div>
+
+                <!-- PR Reference (Auto Fill Trigger) -->
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">PR Reference (Select PR)</label>
+                        <div class="input-group">
+                            <select id="prRef" name="pr_reference" class="form-select border-dark">
+                                <option value="" selected disabled>-- Choose a PR --</option>
+                                <% prs.forEach(pr => { %>
+                                    <option value="<%= pr.pr_number %>">
+                                        <%= pr.pr_number %> : <%= pr.item_name %> (Qty: <%= pr.quantity %>)
+                                    </option>
+                                <% }) %>
+                            </select>
+                            <button type="button" class="btn btn-dark" onclick="fetchPR()">Load PR</button>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Project Duration</label>
+                        <input type="text" name="project_duration" class="form-control border-dark">
+                    </div>
+                </div>
+                <!-- Auto Taken From PR -->
+                <div class="row mb-3 bg-light p-2 mx-0 border rounded">
+                    <div class="col-md-6">
+                        <label class="text-muted">Material Desc (Auto)</label>
+                        <input type="text" id="matDesc" name="material_desc" class="form-control border-0 bg-white" readonly>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="text-muted">Material Code (Auto)</label>
+                        <input type="text" id="matCode" name="material_code" class="form-control border-0 bg-white" readonly>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-3"><label>Quantity</label><input type="number" id="qty" name="quantity" class="form-control border-dark"></div>
+                    <div class="col-md-3"><label>Price</label><input type="number" id="price" name="price" class="form-control border-dark" oninput="calcTotal()"></div>
+                    <div class="col-md-3"><label>Total Price</label><input type="number" id="total" name="total_price" class="form-control border-dark" readonly></div>
+                    <div class="col-md-3"><label>Delivery Date</label><input type="date" name="delivery_date" class="form-control border-dark"></div>
+                </div>
+                
+                <div class="row mb-3">
+                    <div class="col-md-6"><label>Incoterm</label><input type="text" name="incoterm" class="form-control border-dark"></div>
+                    <div class="col-md-6"><label>Payment Term</label><input type="text" name="payment_term" class="form-control border-dark"></div>
+                </div>
+
+                <div class="text-end">
+                    <button type="submit" class="btn btn-retro rounded-pill px-4">SUBMIT</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        async function fetchPR() {
+            const prNo = document.getElementById('prRef').value;
+            try {
+                const res = await fetch('/api/pr/' + prNo);
+                if (!res.ok) throw new Error('PR Not Found');
+                const data = await res.json();
+                document.getElementById('matDesc').value = data.item_name;
+                document.getElementById('matCode').value = data.material_code;
+                document.getElementById('qty').value = data.quantity; // Option to auto fill qty
+            } catch (err) { alert(err.message); }
+        }
+        function calcTotal() {
+            const q = document.getElementById('qty').value;
+            const p = document.getElementById('price').value;
+            document.getElementById('total').value = q * p;
+        }
+    </script>
+</body>
+</html>

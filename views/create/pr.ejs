@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Create PR</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/style.css" rel="stylesheet">
+</head>
+<body>
+    <%- include('../partials/navbar') %>
+
+    <div class="container mt-4">
+        <h2>Create Purchase Request</h2>
+        
+        <div class="status-box mb-4" style="background-color: #f0f8ff;">
+            <h5>📥 Import from Excel</h5>
+            <form action="/create/pr/upload" method="POST" enctype="multipart/form-data" class="d-flex gap-2">
+                <input type="file" name="excelFile" class="form-control" accept=".xlsx, .xls" required>
+                <button type="submit" class="btn btn-primary">Upload</button>
+                <a href="/template.xlsx" class="btn btn-outline-secondary" download>Download Template</a>
+            </form>
+        </div>
+
+        <div class="status-box">
+            <h5>✏️ Manual Input</h5>
+            
+            <div class="alert alert-info">
+                <i class="bi bi-info-circle"></i> PR Number will be <strong>auto-generated</strong> by System after submission.
+            </div>
+
+            <form action="/create/pr" method="POST">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Item Name</label>
+                        <input type="text" name="item_name" class="form-control border-dark" placeholder="e.g. Steel Beams" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Material Code</label>
+                        <input type="text" name="material_code" class="form-control border-dark" placeholder="e.g. MAT-2025-001" required>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Quantity</label>
+                        <input type="number" name="quantity" class="form-control border-dark" min="1" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Budget ($)</label>
+                        <input type="number" name="budget" class="form-control border-dark" min="0" step="0.01">
+                    </div>
+                </div>
+
+                <div class="text-end mt-4">
+                    <a href="/create" class="btn btn-secondary rounded-pill px-4">CANCEL</a>
+                    <button type="submit" class="btn btn-retro rounded-pill px-4">SUBMIT</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
