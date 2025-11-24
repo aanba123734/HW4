@@ -1,18 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Supplier Portal</title>
+    <title>Supplier Menu</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="/css/style.css" rel="stylesheet">
     <style>
-        /* 模仿圖片中的選單樣式 */
+        /* 修改樣式：與 Create/Status 頁面保持一致 */
         .supplier-menu-list {
             list-style: none;
             padding: 0;
             margin-top: 20px;
         }
         .supplier-menu-list li {
-            font-size: 2rem; /* 大字體 */
+            font-size: 2rem; /* 字體大小調整為跟其他 Menu 一樣 */
             font-weight: bold;
             margin-bottom: 10px;
         }
@@ -20,10 +20,14 @@
             text-decoration: none;
             color: #000;
             transition: color 0.3s;
-            cursor: pointer; /* 讓滑鼠變成手指 */
         }
         .supplier-menu-list a:hover {
-            color: #8A2BE2; /* 紫色 hover */
+            color: #8A2BE2; /* 紫色 Hover */
+        }
+        /* 尚未開放的功能樣式 */
+        .supplier-menu-list .disabled-option {
+            color: #ccc; /* 淺灰色 */
+            pointer-events: none; /* 禁止點擊 */
         }
     </style>
 </head>
@@ -33,12 +37,12 @@
     <div class="container mt-5">
         <div class="row">
             <div class="col-md-8 offset-md-1">
-                <ul class="supplier-menu-list">
+                <h2 class="mb-4">Supplier Portal</h2> <ul class="supplier-menu-list">
                     <li>
-                        <a href="/supplier">Supplier Information</a>
+                        <a href="/supplier/info">Supplier Information</a>
                     </li>
-                    <li>
-                        <a href="#">Supplier Request</a>
+                    <li class="disabled-option">
+                        Supplier Request (Coming Soon)
                     </li>
                 </ul>
             </div>

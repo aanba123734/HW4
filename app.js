@@ -10,7 +10,7 @@ const xlsx = require('xlsx');
 const app = express();
 const port = 3000;
 
-// è³????åº«é??ç·?
+// ï¿½????åº«ï¿½??ï¿½?
 const pool = new Pool({
   user: 'admin',
   host: 'localhost',
@@ -29,24 +29,24 @@ app.use(session({
     saveUninitialized: false
 }));
 
-// ????????? ??°å?????æ®? Middleware (???å§?) ?????????
+// ????????? ??ï¿½ï¿½?????ï¿½? Middleware (???ï¿½?) ?????????
 app.use((req, res, next) => {
-    // ?????®å?????ç¶²å??è·¯å??å­???? localsï¼?è®??????? EJS æª?æ¡???½è?½ä½¿??? 'currentPath' è®????
+    // ?????ï¿½ï¿½?????ç¶²ï¿½??è·¯ï¿½??ï¿½???? localsï¿½?ï¿½??????? EJS ï¿½?ï¿½???ï¿½ï¿½?ï¿½ä½¿??? 'currentPath' ï¿½????
     res.locals.currentPath = req.path;
     next();
 });
-// ????????? ??°å?????æ®? Middleware (çµ????) ?????????
+// ????????? ??ï¿½ï¿½?????ï¿½? Middleware (ï¿½????) ?????????
 
 const upload = multer({ dest: 'uploads/' });
 
-// --- Helper: ??ªå??ç·¨è????¢ç????? (Format: PREFIX-YYYYMMDD-Random) ---
+// --- Helper: ??ï¿½ï¿½??ç·¨ï¿½????ï¿½ï¿½????? (Format: PREFIX-YYYYMMDD-Random) ---
 const generateID = (prefix) => {
     const date = new Date().toISOString().slice(0, 10).replace(/-/g, '');
-    const random = Math.floor(1000 + Math.random() * 9000); // 4ä½???¨æ?????
+    const random = Math.floor(1000 + Math.random() * 9000); // 4ï¿½???ï¿½ï¿½?????
     return `${prefix}-${date}-${random}`;
 };
 
-// --- ???å§????è³????åº? ---
+// --- ???ï¿½????ï¿½????ï¿½? ---
 const initDB = async () => {
     try {
         await pool.query(`
@@ -57,7 +57,7 @@ const initDB = async () => {
                 role VARCHAR(20) DEFAULT 'supplier'
             );
         `);
-        // Purchase Request (PR) - PR_ID ??ªå????¢ç??
+        // Purchase Request (PR) - PR_ID ??ï¿½ï¿½????ï¿½ï¿½??
         await pool.query(`
             CREATE TABLE IF NOT EXISTS purchase_requests (
                 id SERIAL PRIMARY KEY,
@@ -70,7 +70,7 @@ const initDB = async () => {
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             );
         `);
-        // Sourcing Request (SR) - å°????????????? Word ???æ±?
+        // Sourcing Request (SR) - ï¿½????????????? Word ???ï¿½?
         await pool.query(`
             CREATE TABLE IF NOT EXISTS sourcing_requests (
                 id SERIAL PRIMARY KEY,
@@ -91,12 +91,12 @@ const initDB = async () => {
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             );
         `);
-        // Purchase Order (PO) - PO_ID ??ªå????¢ç??
+        // Purchase Order (PO) - PO_ID ??ï¿½ï¿½????ï¿½ï¿½??
         await pool.query(`
             CREATE TABLE IF NOT EXISTS purchase_orders (
                 id SERIAL PRIMARY KEY,
                 po_number VARCHAR(50) UNIQUE NOT NULL,
-                sr_reference VARCHAR(50), -- ä¾???? SR ID
+                sr_reference VARCHAR(50), -- ï¿½???? SR ID
                 supplier_name VARCHAR(100),
                 material_code VARCHAR(50),
                 material_name VARCHAR(100),
@@ -138,15 +138,15 @@ const requireLogin = (req, res, next) => {
     next();
 };
 
-// --- API: ä¾????ç«? AJAX ??¥è©¢??? ---
-// ??¹æ?? PR Number ??????è³???? (çµ? SR ???)
+// --- API: ï¿½????ï¿½? AJAX ??ï¿½è©¢??? ---
+// ??ï¿½ï¿½?? PR Number ??????ï¿½???? (ï¿½? SR ???)
 app.get('/api/pr/:pr_number', requireLogin, async (req, res) => {
     const result = await pool.query("SELECT * FROM purchase_requests WHERE pr_number = $1", [req.params.pr_number]);
     if (result.rows.length > 0) res.json(result.rows[0]);
     else res.status(404).json({ error: 'Not Found' });
 });
 
-// ??¹æ?? SR Number ??????è³???? (çµ? PO ???)
+// ??ï¿½ï¿½?? SR Number ??????ï¿½???? (ï¿½? PO ???)
 app.get('/api/sr/:sr_number', requireLogin, async (req, res) => {
     const result = await pool.query("SELECT * FROM sourcing_requests WHERE sr_number = $1", [req.params.sr_number]);
     if (result.rows.length > 0) res.json(result.rows[0]);
@@ -167,7 +167,7 @@ app.post('/login', async (req, res) => {
 });
 app.get('/logout', (req, res) => { req.session.destroy(); res.redirect('/login'); });
 
-// é¦???? Dashboard (??´æ?°ç??)
+// ï¿½???? Dashboard (??ï¿½ï¿½?ï¿½ï¿½??)
 app.get('/', requireLogin, async (req, res) => {
     // 1. Spending (Total PO Amount)
     const poSum = await pool.query("SELECT SUM(total_amount) as total FROM purchase_orders");
@@ -189,9 +189,9 @@ app.get('/create', requireLogin, (req, res) => res.render('create/menu', { user:
 // --- Create PR (Auto Generated ID) ---
 app.get('/create/pr', requireLogin, (req, res) => res.render('create/pr', { user: req.session.user }));
 
-// app.js ä¿®æ?¹é?¨å??
+// app.js ä¿®ï¿½?ï¿½ï¿½?ï¿½ï¿½??
 
-// 1. Create PR (Manual) - ä¿®æ?? Redirect
+// 1. Create PR (Manual) - ä¿®ï¿½?? Redirect
 app.post('/create/pr', requireLogin, async (req, res) => {
     const { item_name, material_code, quantity, budget } = req.body;
     const pr_number = generateID('PR');
@@ -199,11 +199,11 @@ app.post('/create/pr', requireLogin, async (req, res) => {
         'INSERT INTO purchase_requests (pr_number, item_name, material_code, quantity, budget) VALUES ($1, $2, $3, $4, $5)',
         [pr_number, item_name, material_code, quantity, budget]
     );
-    // ä¿®æ?¹ï??å¸¶ä?? success=true ?????®è??
+    // ä¿®ï¿½?ï¿½ï¿½??å¸¶ï¿½?? success=true ?????ï¿½ï¿½??
     res.redirect(`/create?success=true&msg=Purchase Request Created&id=${pr_number}`);
 });
 
-// 2. Create PR (Excel) - ä¿®æ?? Redirect
+// 2. Create PR (Excel) - ä¿®ï¿½?? Redirect
 app.post('/create/pr/upload', requireLogin, upload.single('excelFile'), async (req, res) => {
     try {
         const workbook = xlsx.readFile(req.file.path);
@@ -217,25 +217,25 @@ app.post('/create/pr/upload', requireLogin, upload.single('excelFile'), async (r
             );
             count++;
         }
-        // ä¿®æ?¹ï??å¸¶ä????¯å?¥ç?????
+        // ä¿®ï¿½?ï¿½ï¿½??å¸¶ï¿½????ï¿½ï¿½?ï¿½ï¿½?????
         res.redirect(`/create?success=true&msg=${count} PRs Imported Successfully&id=Batch`);
     } catch (e) { res.send("Error: " + e.message); }
 });
 
 // --- Create Sourcing Request (New) ---
 
-// app.js - ä¿®æ?? /create/sr ??? GET è·¯ç??
+// app.js - ä¿®ï¿½?? /create/sr ??? GET è·¯ï¿½??
 app.get('/create/sr', requireLogin, async (req, res) => {
-    // ???????????? PR è³????ï¼??????°ç???????????
+    // ???????????? PR ï¿½????ï¿½??????ï¿½ï¿½???????????
     const prResult = await pool.query("SELECT * FROM purchase_requests ORDER BY created_at DESC");
     
-    // å°? prs è³??????³çµ¦???ç«?
+    // ï¿½? prs ï¿½??????ï¿½çµ¦???ï¿½?
     res.render('create/sr', { 
         user: req.session.user, 
         prs: prResult.rows 
     });
 });
-// app.js - ä¿®æ­£ SR å»ºç??è·¯ç?? (??????ç©ºå?¼å??é¡?)
+// app.js - ä¿®æ­£ SR å»ºï¿½??è·¯ï¿½?? (??????ç©ºï¿½?ï¿½ï¿½??ï¿½?)
 app.post('/create/sr', requireLogin, async (req, res) => {
     const sr_number = generateID('SR');
     const { supplier_id, title, pr_reference, project_duration, material_desc, material_code, quantity, price, total_price, incoterm, payment_term, delivery_date, start_date, end_date } = req.body;
@@ -252,13 +252,13 @@ app.post('/create/sr', requireLogin, async (req, res) => {
             project_duration, 
             material_desc, 
             material_code, 
-            // ??? ä¿®æ­£???é»?ï¼?å¦????æ¬?ä½???¯ç©ºå­?ä¸²ï??å°±è????? 0 ??? null
+            // ??? ä¿®æ­£???ï¿½?ï¿½?ï¿½????ï¿½?ï¿½???ï¿½ç©ºï¿½?ä¸²ï¿½??å°±ï¿½????? 0 ??? null
             quantity || 0, 
             price || 0, 
             total_price || 0, 
             incoterm, 
             payment_term, 
-            delivery_date || null, // ??¥æ??å¦??????¯ç©ºå­?ä¸²ä??è¦?è½? null
+            delivery_date || null, // ??ï¿½ï¿½??ï¿½??????ï¿½ç©ºï¿½?ä¸²ï¿½??ï¿½?ï¿½? null
             start_date || null, 
             end_date || null
         ]
@@ -267,19 +267,19 @@ app.post('/create/sr', requireLogin, async (req, res) => {
 });
 
 // --- Create PO (Manual or From SR) ---
-// 1. ä¿®æ?? GET /create/po (?????? SR è³????çµ¦ä???????¸å?®ç??)
+// 1. ä¿®ï¿½?? GET /create/po (?????? SR ï¿½????çµ¦ï¿½???????ï¿½ï¿½?ï¿½ï¿½??)
 app.get('/create/po', requireLogin, async (req, res) => {
-    // ??????????????? In Progress ??? Completed ??? SRï¼?è®?ä½¿ç?¨è????¸æ??
+    // ??????????????? In Progress ??? Completed ??? SRï¿½?ï¿½?ä½¿ï¿½?ï¿½ï¿½????ï¿½ï¿½??
     const srResult = await pool.query("SELECT * FROM sourcing_requests ORDER BY created_at DESC");
     
     res.render('create/po', { 
         user: req.session.user,
-        srs: srResult.rows // ??³é?? srs çµ¦å??ç«?
+        srs: srResult.rows // ??ï¿½ï¿½?? srs çµ¦ï¿½??ï¿½?
     });
 });
 
-// 4. Create PO - ä¿®æ?? Redirect
-// app.js - ä¿®æ­£ PO å»ºç??è·¯ç?? (??????ç©ºå?¼å??é¡?)
+// 4. Create PO - ä¿®ï¿½?? Redirect
+// app.js - ä¿®æ­£ PO å»ºï¿½??è·¯ï¿½?? (??????ç©ºï¿½?ï¿½ï¿½??ï¿½?)
 app.post('/create/po', requireLogin, async (req, res) => {
     const po_number = generateID('PO');
     const { sr_reference, supplier_name, material_code, material_name, quantity, unit_price, total_amount, delivery_date, start_date, end_date } = req.body;
@@ -294,7 +294,7 @@ app.post('/create/po', requireLogin, async (req, res) => {
             supplier_name, 
             material_code, 
             material_name, 
-            // ??? ä¿®æ­£???é»?ï¼?????????¸å??ç©ºå??
+            // ??? ä¿®æ­£???ï¿½?ï¿½?????????ï¿½ï¿½??ç©ºï¿½??
             quantity || 0, 
             unit_price || 0, 
             total_amount || 0, 
@@ -304,7 +304,7 @@ app.post('/create/po', requireLogin, async (req, res) => {
         ]
     );
     
-    // å»ºç??å°?????????©æ????????
+    // å»ºï¿½??ï¿½?????????ï¿½ï¿½????????
     await pool.query('INSERT INTO delivery_status (po_number, material_code, status) VALUES ($1, $2, $3)', [po_number, material_code, 'Processing']);
     
     res.redirect(`/create?success=true&msg=Purchase Order Created&id=${po_number}`);
@@ -317,16 +317,16 @@ app.get('/status/delivery', requireLogin, async (req, res) => {
     const result = await pool.query(query);
     res.render('status/delivery', { user: req.session.user, deliveries: result.rows });
 });
-// 2. ??°å?? GET /status (Status ??¸å?®é?????)
+// 2. ??ï¿½ï¿½?? GET /status (Status ??ï¿½ï¿½?ï¿½ï¿½?????)
 app.get('/status', requireLogin, (req, res) => {
     res.render('status/menu', { user: req.session.user });
 });
-// 3. ??°å?? GET /status/pr-po (PR-PO ????????¥è©¢??????)
+// 3. ??ï¿½ï¿½?? GET /status/pr-po (PR-PO ????????ï¿½è©¢??????)
 app.get('/status/pr-po', requireLogin, async (req, res) => {
-    // ä¿®æ?? app.js ä¸? /status/pr-po ??? SQLï¼??????? pr.id
+    // ä¿®ï¿½?? app.js ï¿½? /status/pr-po ??? SQLï¿½??????? pr.id
     let query = `
         SELECT 
-            pr.id as pr_id,  -- ??? ??°å?????è¡?ï¼??????? ID ä¾????ç«¯é??çµ?ä½¿ç??
+            pr.id as pr_id,  -- ??? ??ï¿½ï¿½?????ï¿½?ï¿½??????? ID ï¿½????ç«¯ï¿½??ï¿½?ä½¿ï¿½??
             pr.pr_number, pr.item_name, pr.status as pr_status, pr.created_at as pr_date,
             sr.sr_number, sr.status as sr_status,
             po.po_number, po.status as po_status,
@@ -337,7 +337,7 @@ app.get('/status/pr-po', requireLogin, async (req, res) => {
         LEFT JOIN delivery_status ds ON po.po_number = ds.po_number
     `;
     
-    // ???å°????è¼?
+    // ???ï¿½????ï¿½?
     let params = [];
     if (req.query.search) {
         query += ` WHERE pr.pr_number ILIKE $1 OR po.po_number ILIKE $1 OR sr.sr_number ILIKE $1`;
@@ -350,13 +350,13 @@ app.get('/status/pr-po', requireLogin, async (req, res) => {
     res.render('status/pr_po', { user: req.session.user, data: result.rows });
 });
 
-// app.js - ·s¼W Delivery View ¸ô¥Ñ
+// app.js - ï¿½sï¿½W Delivery View ï¿½ï¿½ï¿½ï¿½
 
-// GET: View Delivery Details (·s¼W)
+// GET: View Delivery Details (ï¿½sï¿½W)
 app.get('/status/delivery/:id', requireLogin, async (req, res) => {
     const id = req.params.id;
     
-    // ¼´¨úª«¬yª¬ºA¡A¨ÃÃöÁp PO ªí®æ¥HÀò¨ú§ó¦h¸ê°T (¨ÑÀ³°Ó¡B®É¶¡)
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½yï¿½ï¿½ï¿½Aï¿½Aï¿½ï¿½ï¿½ï¿½ï¿½p PO ï¿½ï¿½ï¿½ï¿½Hï¿½ï¿½ï¿½ï¿½ï¿½hï¿½ï¿½T (ï¿½ï¿½ï¿½ï¿½ï¿½Ó¡Bï¿½É¶ï¿½)
     const query = `
         SELECT 
             ds.*,
@@ -376,9 +376,9 @@ app.get('/status/delivery/:id', requireLogin, async (req, res) => {
     }
 });
 
-// app.js (??°å????¨å??)
+// app.js (??ï¿½ï¿½????ï¿½ï¿½??)
 
-// 1. GET: ??²å?¥ç·¨è¼¯é????? (Edit Page)
+// 1. GET: ??ï¿½ï¿½?ï¿½ç·¨è¼¯ï¿½????? (Edit Page)
 app.get('/status/delivery/:id/edit', requireLogin, async (req, res) => {
     const id = req.params.id;
     const result = await pool.query("SELECT * FROM delivery_status WHERE id = $1", [id]);
@@ -390,22 +390,22 @@ app.get('/status/delivery/:id/edit', requireLogin, async (req, res) => {
     }
 });
 
-// 2. PUT: ??´æ?°ç????? (Update Logic)
+// 2. PUT: ??ï¿½ï¿½?ï¿½ï¿½????? (Update Logic)
 app.put('/status/delivery/:id', requireLogin, async (req, res) => {
     const id = req.params.id;
     const { status } = req.body;
     
-    // ??´æ?°ç??????????????
+    // ??ï¿½ï¿½?ï¿½ï¿½??????????????
     await pool.query(
         "UPDATE delivery_status SET status = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2",
         [status, id]
     );
     
-    // è·³è????????è¡¨ä¸¦é¡¯ç¤º??????è¨????
+    // è·³ï¿½????????è¡¨ä¸¦é¡¯ç¤º??????ï¿½????
     res.redirect('/status/delivery?success=true&msg=Status Updated Successfully');
 });
 
-// 3. DELETE: ??ªé?¤ç????? (Delete Logic)
+// 3. DELETE: ??ï¿½ï¿½?ï¿½ï¿½????? (Delete Logic)
 app.delete('/status/delivery/:id', requireLogin, async (req, res) => {
     const id = req.params.id;
     
@@ -416,9 +416,9 @@ app.delete('/status/delivery/:id', requireLogin, async (req, res) => {
 
 // app.js
 
-// 1. GET: View Details (°ßÅª¸Ô±¡­¶)
+// 1. GET: View Details (ï¿½ï¿½Åªï¿½Ô±ï¿½ï¿½ï¿½)
 app.get('/status/pr-po/:id', requireLogin, async (req, res) => {
-    // ³o­Ó Query »Ý­n¼´¥X©Ò¦³Äæ¦ì¡A¥]§t start_date, end_date, price, budget µ¥
+    // ï¿½oï¿½ï¿½ Query ï¿½Ý­nï¿½ï¿½ï¿½Xï¿½Ò¦ï¿½ï¿½ï¿½ï¿½Aï¿½]ï¿½t start_date, end_date, price, budget ï¿½ï¿½
     const query = `
         SELECT 
             pr.id as pr_id, pr.pr_number, pr.item_name, pr.material_code, pr.quantity, pr.budget, pr.status as pr_status,
@@ -435,28 +435,28 @@ app.get('/status/pr-po/:id', requireLogin, async (req, res) => {
     const result = await pool.query(query, [req.params.id]);
     
     if (result.rows.length > 0) {
-        // §PÂ_¬O§_¬° "Edit" ½Ð¨D (¦]¬° Edit ¸ò View ¸ô®|«Ü¹³¡A³o¬O¤@ºØÂ²³æªº°Ï¤À¤è¦¡¡A©Î§A«O«ù­ì¦³ªº /edit ¸ô¥Ñ)
-        // ³o¸Ì§Ú­Ìª½±µ render view ­¶­±
+        // ï¿½Pï¿½_ï¿½Oï¿½_ï¿½ï¿½ "Edit" ï¿½Ð¨D (ï¿½]ï¿½ï¿½ Edit ï¿½ï¿½ View ï¿½ï¿½ï¿½|ï¿½Ü¹ï¿½ï¿½Aï¿½oï¿½Oï¿½@ï¿½ï¿½Â²ï¿½æªºï¿½Ï¤ï¿½ï¿½è¦¡ï¿½Aï¿½Î§Aï¿½Oï¿½ï¿½ï¿½ì¦³ï¿½ï¿½ /edit ï¿½ï¿½ï¿½ï¿½)
+        // ï¿½oï¿½Ì§Ú­Ìªï¿½ï¿½ï¿½ render view ï¿½ï¿½ï¿½ï¿½
         res.render('status/pr_po_view', { user: req.session.user, data: result.rows[0] });
     } else {
         res.send("Record not found");
     }
 });
 
-// --- §ä¨ì­ì¥»ªº /status/pr-po/:id/edit ¨Ã´À´«¦¨³o¬q ---
+// --- ï¿½ï¿½ï¿½ì¥»ï¿½ï¿½ /status/pr-po/:id/edit ï¿½Ã´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½oï¿½q ---
 
-// 2. GET: ¶i¤J PR-PO ½s¿è­¶­± (§ó·sª© - ¥]§t¤é´ÁÄæ¦ì)
+// 2. GET: ï¿½iï¿½J PR-PO ï¿½sï¿½è­¶ï¿½ï¿½ (ï¿½ï¿½sï¿½ï¿½ - ï¿½]ï¿½tï¿½ï¿½ï¿½ï¿½ï¿½ï¿½)
 app.get('/status/pr-po/:id/edit', requireLogin, async (req, res) => {
     const prId = req.params.id;
     
-    // §ó·s SQL: ¦h¼´¥X sr_start, sr_end, po_start, po_end
+    // ï¿½ï¿½s SQL: ï¿½hï¿½ï¿½ï¿½X sr_start, sr_end, po_start, po_end
     const query = `
         SELECT 
             pr.id as pr_id, pr.pr_number, pr.status as pr_status,
             sr.sr_number, sr.status as sr_status,
-            sr.start_date as sr_start, sr.end_date as sr_end, -- ·s¼W
+            sr.start_date as sr_start, sr.end_date as sr_end, -- ï¿½sï¿½W
             po.po_number, po.status as po_status,
-            po.start_date as po_start, po.end_date as po_end  -- ·s¼W
+            po.start_date as po_start, po.end_date as po_end  -- ï¿½sï¿½W
         FROM purchase_requests pr
         LEFT JOIN sourcing_requests sr ON pr.pr_number = sr.pr_reference
         LEFT JOIN purchase_orders po ON sr.sr_number = po.sr_reference
@@ -472,19 +472,19 @@ app.get('/status/pr-po/:id/edit', requireLogin, async (req, res) => {
     }
 });
 
-// --- §ä¨ì­ì¥»ªº app.put('/status/pr-po/:id') ¨Ã´À´«¦¨³o¬q ---
+// --- ï¿½ï¿½ï¿½ì¥»ï¿½ï¿½ app.put('/status/pr-po/:id') ï¿½Ã´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½oï¿½q ---
 
-// 3. PUT: ¦P®É§ó·s PR, SR, PO ªºª¬ºA»P¤é´Á (§ó·sª©)
+// 3. PUT: ï¿½Pï¿½É§ï¿½s PR, SR, PO ï¿½ï¿½ï¿½ï¿½ï¿½Aï¿½Pï¿½ï¿½ï¿½ (ï¿½ï¿½sï¿½ï¿½)
 app.put('/status/pr-po/:id', requireLogin, async (req, res) => {
     const prId = req.params.id;
-    // ±µ¦¬·sªºÄæ¦ì¡G¥]§tª¬ºA»P¤é´Á
+    // ï¿½ï¿½ï¿½ï¿½ï¿½sï¿½ï¿½ï¿½ï¿½ï¿½Gï¿½]ï¿½tï¿½ï¿½ï¿½Aï¿½Pï¿½ï¿½ï¿½
     const { pr_status, sr_status, sr_number, po_status, po_number, sr_start, sr_end, po_start, po_end } = req.body;
     
     try {
-        // 1. §ó·s PR ª¬ºA
+        // 1. ï¿½ï¿½s PR ï¿½ï¿½ï¿½A
         await pool.query("UPDATE purchase_requests SET status = $1 WHERE id = $2", [pr_status, prId]);
         
-        // 2. ¦pªG¦³ SR¡A§ó·s SR ª¬ºA»P¤é´Á
+        // 2. ï¿½pï¿½Gï¿½ï¿½ SRï¿½Aï¿½ï¿½s SR ï¿½ï¿½ï¿½Aï¿½Pï¿½ï¿½ï¿½
         if (sr_number) {
             await pool.query(
                 "UPDATE sourcing_requests SET status=$1, start_date=$2, end_date=$3 WHERE sr_number=$4", 
@@ -492,7 +492,7 @@ app.put('/status/pr-po/:id', requireLogin, async (req, res) => {
             );
         }
         
-        // 3. ¦pªG¦³ PO¡A§ó·s PO ª¬ºA»P¤é´Á
+        // 3. ï¿½pï¿½Gï¿½ï¿½ POï¿½Aï¿½ï¿½s PO ï¿½ï¿½ï¿½Aï¿½Pï¿½ï¿½ï¿½
         if (po_number) {
             await pool.query(
                 "UPDATE purchase_orders SET status=$1, start_date=$2, end_date=$3 WHERE po_number=$4", 
@@ -506,12 +506,12 @@ app.put('/status/pr-po/:id', requireLogin, async (req, res) => {
     }
 });
 
-// 3. DELETE: ??ªé?? PR (??´æ??æµ?ç¨????æº????)
+// 3. DELETE: ??ï¿½ï¿½?? PR (??ï¿½ï¿½??ï¿½?ï¿½????ï¿½????)
 app.delete('/status/pr-po/:id', requireLogin, async (req, res) => {
     const prId = req.params.id;
     
-    // ??ªé?? PR ??³å?¯ï???????ºè???????? LEFT JOIN PRï¼?PR æ¶?å¤±å????´å??æ¶?å¤?
-    // (??¨ç??å¯? ERP ä¸­å?¯è?½æ???????´å?´è¬¹???æª¢æ?¥ï??ä½?ä½?æ¥­ç·´ç¿????æ¨???¯å?¯ä»¥???)
+    // ??ï¿½ï¿½?? PR ??ï¿½ï¿½?ï¿½ï¿½???????ï¿½ï¿½???????? LEFT JOIN PRï¿½?PR ï¿½?å¤±ï¿½????ï¿½ï¿½??ï¿½?ï¿½?
+    // (??ï¿½ï¿½??ï¿½? ERP ä¸­ï¿½?ï¿½ï¿½?ï¿½ï¿½???????ï¿½ï¿½?ï¿½è¬¹???æª¢ï¿½?ï¿½ï¿½??ï¿½?ï¿½?æ¥­ç·´ï¿½????ï¿½???ï¿½ï¿½?ï¿½ä»¥???)
     await pool.query("DELETE FROM purchase_requests WHERE id = $1", [prId]);
     
     res.redirect('/status/pr-po?success=true&msg=Purchase Request Deleted');
@@ -519,38 +519,146 @@ app.delete('/status/pr-po/:id', requireLogin, async (req, res) => {
 
 app.get('/supplier', requireLogin, (req, res) => res.render('supplier/index', { user: req.session.user }));
 app.get('/suppliers', requireLogin, async (req, res) => {
-     // ç°¡å?®ç??ä¾??????????è¡? (??¥è?????åº«æ?? suppliers è¡¨å?¯è?????)
+     // ç°¡ï¿½?ï¿½ï¿½??ï¿½??????????ï¿½? (??ï¿½ï¿½?????åº«ï¿½?? suppliers è¡¨ï¿½?ï¿½ï¿½?????)
      res.send("Supplier List Placeholder");
 });
 
-// app.js - Profile Routes (­×§ïª©)
+// app.js - Supplier Routes æ“´å……
 
-// 1. GET: Read Profile (ÀËµø­Ó¤H¸ê®Æ - ¹w³]­¶­±)
+// 1. Supplier Menu (åŽŸæœ¬çš„é¸å–®é é¢)
+// app.js - ä¿®æ”¹ Supplier å…¥å£è·¯ç”±
+
+// 1. Supplier Menu -> æ”¹ç‚ºç›´æŽ¥è·³è½‰åˆ° Info åˆ—è¡¨é 
+app.get('/supplier', requireLogin, (req, res) => {
+    // åŽŸæœ¬æ˜¯: res.render('supplier/index', ...);
+    // ä¿®æ”¹ç‚º: ç›´æŽ¥è½‰å€åˆ° /supplier/info
+    res.redirect('/supplier/info');
+});
+
+// 2. GET: Supplier Information (å”¯è®€åˆ—è¡¨ Mode)
+// app.js - ä¿®æ”¹ Supplier Info è·¯ç”± (æ”¯æ´æœå°‹èˆ‡ç¯©é¸)
+
+app.get('/supplier/info', requireLogin, async (req, res) => {
+    // 1. åŸºç¤Ž SQL æŒ‡ä»¤ (ä½¿ç”¨ WHERE 1=1 æ–¹ä¾¿å¾ŒçºŒä¸²æŽ¥ AND)
+    let query = "SELECT * FROM suppliers WHERE 1=1";
+    let params = [];
+    let paramIndex = 1;
+
+    // 2. è™•ç†é—œéµå­—æœå°‹ (Keyword Search)
+    if (req.query.search) {
+        // ILIKE ä»£è¡¨ä¸åˆ†å¤§å°å¯«æœå°‹ï¼Œæ”¯æ´ ID, Name, Phone, Email
+        query += ` AND (supplier_id ILIKE $${paramIndex} OR supplier_name ILIKE $${paramIndex} OR phone ILIKE $${paramIndex} OR email ILIKE $${paramIndex})`;
+        params.push(`%${req.query.search}%`);
+        paramIndex++;
+    }
+
+    // 3. è™•ç†ç‹€æ…‹ä¸‹æ‹‰é¸å–® (Status Dropdown)
+    if (req.query.status && req.query.status !== 'All') {
+        query += ` AND status = $${paramIndex}`;
+        params.push(req.query.status);
+        paramIndex++;
+    }
+
+    query += " ORDER BY supplier_id ASC";
+
+    const result = await pool.query(query, params);
+
+    // 4. å›žå‚³è³‡æ–™çµ¦å‰ç«¯ (åŒ…å«æœå°‹æ¢ä»¶ï¼Œè®“è¼¸å…¥æ¡†èƒ½ä¿ç•™åŽŸæœ¬çš„å­—)
+    res.render('supplier/info', { 
+        user: req.session.user, 
+        suppliers: result.rows,
+        searchQuery: req.query.search || '',  // ä¿ç•™æœå°‹æ–‡å­—
+        searchStatus: req.query.status || 'All' // ä¿ç•™ä¸‹æ‹‰é¸å–®é¸é …
+    });
+});
+
+// 3. GET: Add Supplier Page (æ–°å¢žé é¢)
+app.get('/supplier/add', requireLogin, (req, res) => {
+    // å‚³å…¥ç©ºç‰©ä»¶ä»£è¡¨æ˜¯æ–°å¢žæ¨¡å¼
+    res.render('supplier/form', { user: req.session.user, supplier: null });
+});
+
+// 4. POST: Create Supplier (è™•ç†æ–°å¢ž)
+app.post('/supplier/add', requireLogin, async (req, res) => {
+    const { supplier_name, phone, email, status } = req.body;
+    const supplier_id = generateID('SUP'); // ä½¿ç”¨ä¹‹å‰çš„ generateID å‡½å¼
+    
+    await pool.query(
+        "INSERT INTO suppliers (supplier_id, supplier_name, phone, email, status) VALUES ($1, $2, $3, $4, $5)",
+        [supplier_id, supplier_name, phone, email, status]
+    );
+    
+    res.redirect('/supplier/info?success=true&msg=Supplier Added Successfully');
+});
+
+// 5. GET: Edit Supplier Page (ç·¨è¼¯é é¢)
+app.get('/supplier/edit/:id', requireLogin, async (req, res) => {
+    const result = await pool.query("SELECT * FROM suppliers WHERE id = $1", [req.params.id]);
+    if (result.rows.length > 0) {
+        // å‚³å…¥ supplier ç‰©ä»¶ä»£è¡¨æ˜¯ç·¨è¼¯æ¨¡å¼
+        res.render('supplier/form', { user: req.session.user, supplier: result.rows[0] });
+    } else {
+        res.redirect('/supplier/info');
+    }
+});
+
+// 6. POST: Update Supplier (è™•ç†æ›´æ–°)
+app.post('/supplier/edit/:id', requireLogin, async (req, res) => {
+    const { supplier_name, phone, email, status } = req.body;
+    
+    await pool.query(
+        "UPDATE suppliers SET supplier_name=$1, phone=$2, email=$3, status=$4 WHERE id=$5",
+        [supplier_name, phone, email, status, req.params.id]
+    );
+    
+    res.redirect('/supplier/info?success=true&msg=Supplier Updated Successfully');
+});
+
+// app.js - æ–°å¢ž Supplier Delete è·¯ç”±
+
+// 7. DELETE: Remove Supplier (åˆªé™¤ä¾›æ‡‰å•†)
+app.delete('/supplier/delete/:id', requireLogin, async (req, res) => {
+    const id = req.params.id;
+    
+    try {
+        // åŸ·è¡Œåˆªé™¤æŒ‡ä»¤
+        await pool.query("DELETE FROM suppliers WHERE id = $1", [id]);
+        res.redirect('/supplier/info?success=true&msg=Supplier Deleted Successfully');
+    } catch (err) {
+        // è‹¥è©²ä¾›æ‡‰å•†å·²è¢«å…¶ä»–è¡¨å–®å¼•ç”¨(Foreign Key)ï¼Œå¯èƒ½æœƒå ±éŒ¯ï¼Œé€™é‚Šåšç°¡å–®è™•ç†
+        console.error(err);
+        res.send("Error: Could not delete supplier. It might be referenced in other records.");
+    }
+});
+
+// app.js - Profile Routes (ï¿½×§ïª©)
+
+// 1. GET: Read Profile (ï¿½Ëµï¿½ï¿½Ó¤Hï¿½ï¿½ï¿½ - ï¿½wï¿½]ï¿½ï¿½ï¿½ï¿½)
 app.get('/profile', requireLogin, (req, res) => {
     res.render('profile', { user: req.session.user });
 });
 
-// 2. GET: Edit Profile (¶i¤J­×§ïµe­±)
+// 2. GET: Edit Profile (ï¿½iï¿½Jï¿½×§ï¿½eï¿½ï¿½)
 app.get('/profile/edit', requireLogin, (req, res) => {
     res.render('profile_edit', { user: req.session.user });
 });
 
-// 3. POST: Save Changes (Àx¦s¨Ã¸õÂà¦^ÀËµø­¶­±)
+// 3. POST: Save Changes (ï¿½xï¿½sï¿½Ã¸ï¿½ï¿½ï¿½^ï¿½Ëµï¿½ï¿½ï¿½ï¿½ï¿½)
 app.post('/profile', requireLogin, async (req, res) => {
     const { fullname, phone, email } = req.body;
     const userId = req.session.user.id;
     
-    // §ó·s¸ê®Æ®w
+    // ï¿½ï¿½sï¿½ï¿½Æ®w
     await pool.query(
         "UPDATE users SET fullname=$1, phone=$2, email=$3 WHERE id=$4",
         [fullname, phone, email, userId]
     );
     
-    // §ó·s session ¤¤ªº¨Ï¥ÎªÌ¸ê®Æ¡A½T«O­¶­±Åã¥Ü³Ì·s¸ê°T
+    // ï¿½ï¿½s session ï¿½ï¿½ï¿½ï¿½ï¿½Ï¥ÎªÌ¸ï¿½Æ¡Aï¿½Tï¿½Oï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ü³Ì·sï¿½ï¿½T
     const updatedUser = await pool.query("SELECT * FROM users WHERE id=$1", [userId]);
     req.session.user = updatedUser.rows[0];
     
-    // ¡¹ ­×§ï³o¸Ì¡G¦¨¥\«á¸õÂà¦^ Read Profile (/profile)¡A¨Ã±a¤W¦¨¥\°T®§
+    // ï¿½ï¿½ ï¿½×§ï¿½oï¿½Ì¡Gï¿½ï¿½ï¿½\ï¿½ï¿½ï¿½ï¿½ï¿½^ Read Profile (/profile)ï¿½Aï¿½Ã±aï¿½Wï¿½ï¿½ï¿½\ï¿½Tï¿½ï¿½
     res.redirect('/profile?success=true&msg=Profile Updated Successfully');
 });
 

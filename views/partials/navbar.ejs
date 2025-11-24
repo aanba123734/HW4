@@ -1,19 +1,70 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+<style>
+    /* Hover 下拉選單樣式 */
+    .navbar-nav .dropdown-menu {
+        display: none; /* 預設隱藏 */
+        margin-top: 0;
+        background-color: #fff;
+        border: 2px solid #000; /* 復古風格邊框 */
+        box-shadow: 4px 4px 0px #000;
+    }
+
+    /* 當滑鼠懸停在 nav-item 上時，顯示 dropdown-menu */
+    .navbar-nav .nav-item:hover .dropdown-menu {
+        display: block;
+    }
+
+    /* 下拉選單項目的樣式 */
+    .dropdown-item {
+        font-weight: bold;
+        color: #333;
+        padding: 10px 20px;
+        transition: background-color 0.2s, color 0.2s;
+    }
+
+    .dropdown-item:hover {
+        background-color: #E6E6FA; /* 淡紫色背景 */
+        color: #8A2BE2; /* 深紫色文字 */
+    }
+</style>
+
 <nav class="navbar navbar-expand-lg navbar-custom">
     <div class="container-fluid">
         <a class="navbar-brand" href="/">SUPPLYEASE.COM</a>
+        
         <div class="collapse navbar-collapse">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item"><a class="nav-link" href="/">HOME</a></li>
-                <li class="nav-item"><a class="nav-link" href="/create">Create</a></li>
-                <li class="nav-item"><a class="nav-link" href="/status">Status</a></li>
+                
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="/create" role="button" aria-expanded="false">
+                        Create
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="/create/pr">Create Purchase Request</a></li>
+                        <li><a class="dropdown-item" href="/create/sr">Create Sourcing Request</a></li>
+                        <li><a class="dropdown-item" href="/create/po">Create Purchase Order</a></li>
+                    </ul>
+                </li>
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="/status" role="button" aria-expanded="false">
+                        Status
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="/status/pr-po">PR - PO Status</a></li>
+                        <li><a class="dropdown-item" href="/status/delivery">Delivery Status</a></li>
+                    </ul>
+                </li>
+
                 <li class="nav-item"><a class="nav-link" href="#">Bidding</a></li>
                 
-                <li class="nav-item"><a class="nav-link" href="/supplier">Supplier</a></li>
+                <li class="nav-item"><a class="nav-link" href="/supplier/info">Supplier</a></li>
                 
                 <li class="nav-item"><a class="nav-link" href="#">HELP</a></li>
             </ul>
+
             <div class="d-flex align-items-center">
                 <a href="/profile" class="text-decoration-none me-3 d-flex align-items-center text-white">
                     <div class="bg-light text-dark rounded-circle d-flex justify-content-center align-items-center fw-bold" style="width: 35px; height: 35px; margin-right: 8px;">
@@ -26,6 +77,7 @@
         </div>
     </div>
 </nav>
+
 <% if (typeof currentPath !== 'undefined' && currentPath !== '/') { %>
     <div class="container-fluid mt-2 px-4">
         <a href="javascript:history.back()" class="btn btn-sm btn-light border-dark rounded-pill fw-bold" style="background-color: #E6E6FA;">
