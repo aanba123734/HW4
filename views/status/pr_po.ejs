@@ -30,10 +30,8 @@
                     <tr class="table-secondary">
                         <th>Purchase Request (PR)</th>
                         <th>➔</th>
-                        <th><i class="bi bi-arrow-right"></i></th>
                         <th>Sourcing Request (SR)</th>
                         <th>➔</th>
-                        <th><i class="bi bi-arrow-right"></i></th>
                         <th>Purchase Order (PO)</th>
                         <th>Current Status</th>
                         <th>Actions</th> </tr>
@@ -50,7 +48,6 @@
                                 <span class="badge bg-secondary"><%= row.pr_status %></span>
                             </td>
                             <th>➔</th>
-                            <th><i class="bi bi-arrow-right"></i></th>
                             <td>
                                 <% if(row.sr_number) { %>
                                     <strong><%= row.sr_number %></strong><br>
@@ -60,7 +57,6 @@
                                 <% } %>
                             </td>
                             <th>➔</th>
-                            <th><i class="bi bi-arrow-right"></i></th>
                             <td>
                                 <% if(row.po_number) { %>
                                     <strong><%= row.po_number %></strong><br>
