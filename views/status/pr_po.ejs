@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="UTF-8">
     <title>PR-PO Status</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="/css/style.css" rel="stylesheet">
@@ -29,8 +30,10 @@
                     <tr class="table-secondary">
                         <th>Purchase Request (PR)</th>
                         <th>➔</th>
+                        <th><i class="bi bi-arrow-right"></i></th>
                         <th>Sourcing Request (SR)</th>
                         <th>➔</th>
+                        <th><i class="bi bi-arrow-right"></i></th>
                         <th>Purchase Order (PO)</th>
                         <th>Current Status</th>
                         <th>Actions</th> </tr>
@@ -46,7 +49,8 @@
                                 <small><%= row.item_name %></small><br>
                                 <span class="badge bg-secondary"><%= row.pr_status %></span>
                             </td>
-                            <td>➜</td>
+                            <th>➔</th>
+                            <th><i class="bi bi-arrow-right"></i></th>
                             <td>
                                 <% if(row.sr_number) { %>
                                     <strong><%= row.sr_number %></strong><br>
@@ -55,7 +59,8 @@
                                     <span class="text-muted">--</span>
                                 <% } %>
                             </td>
-                            <td>➜</td>
+                            <th>➔</th>
+                            <th><i class="bi bi-arrow-right"></i></th>
                             <td>
                                 <% if(row.po_number) { %>
                                     <strong><%= row.po_number %></strong><br>
@@ -81,9 +86,16 @@
                             </td>
 
                             <td>
-                                <a href="/status/pr-po/<%= row.pr_id %>/edit" class="btn btn-sm btn-outline-primary mb-1">Edit</a>
-                                <form action="/status/pr-po/<%= row.pr_id %>?_method=DELETE" method="POST" onsubmit="return confirm('Delete?');" style="display:inline;">
-                                    <button type="submit" class="btn btn-sm btn-outline-danger">Del</button>
+                                <a href="/status/pr-po/<%= row.pr_id %>" class="btn btn-sm btn-outline-dark mb-1" title="View Details">
+                                    <i class="bi bi-eye"></i> View
+                                </a>
+                                <a href="/status/pr-po/<%= row.pr_id %>/edit" class="btn btn-sm btn-outline-primary mb-1">
+                                    <i class="bi bi-pencil-square"></i> Edit
+                                </a>
+                                <form action="/status/pr-po/<%= row.pr_id %>?_method=DELETE" method="POST" onsubmit="return confirm('Deleting PR will hide this entire record. Continue?');" style="display:inline;">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">
+                                        <i class="bi bi-trash"></i> Del
+                                    </button>
                                 </form>
                             </td>
                         </tr>

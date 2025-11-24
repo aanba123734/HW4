@@ -10,7 +10,7 @@ const xlsx = require('xlsx');
 const app = express();
 const port = 3000;
 
-// è³‡æ–™åº«é€£ç·š
+// è³????åº«é??ç·?
 const pool = new Pool({
   user: 'admin',
   host: 'localhost',
@@ -29,24 +29,24 @@ app.use(session({
     saveUninitialized: false
 }));
 
-// â˜…â˜…â˜… æ–°å¢žé€™æ®µ Middleware (é–‹å§‹) â˜…â˜…â˜…
+// ????????? ??°å?????æ®? Middleware (???å§?) ?????????
 app.use((req, res, next) => {
-    // æŠŠç›®å‰çš„ç¶²å€è·¯å¾‘å­˜å…¥ localsï¼Œè®“æ‰€æœ‰ EJS æª”æ¡ˆéƒ½èƒ½ä½¿ç”¨ 'currentPath' è®Šæ•¸
+    // ?????®å?????ç¶²å??è·¯å??å­???? localsï¼?è®??????? EJS æª?æ¡???½è?½ä½¿??? 'currentPath' è®????
     res.locals.currentPath = req.path;
     next();
 });
-// â˜…â˜…â˜… æ–°å¢žé€™æ®µ Middleware (çµæŸ) â˜…â˜…â˜…
+// ????????? ??°å?????æ®? Middleware (çµ????) ?????????
 
 const upload = multer({ dest: 'uploads/' });
 
-// --- Helper: è‡ªå‹•ç·¨è™Ÿç”¢ç”Ÿå™¨ (Format: PREFIX-YYYYMMDD-Random) ---
+// --- Helper: ??ªå??ç·¨è????¢ç????? (Format: PREFIX-YYYYMMDD-Random) ---
 const generateID = (prefix) => {
     const date = new Date().toISOString().slice(0, 10).replace(/-/g, '');
-    const random = Math.floor(1000 + Math.random() * 9000); // 4ä½éš¨æ©Ÿæ•¸
+    const random = Math.floor(1000 + Math.random() * 9000); // 4ä½???¨æ?????
     return `${prefix}-${date}-${random}`;
 };
 
-// --- åˆå§‹åŒ–è³‡æ–™åº« ---
+// --- ???å§????è³????åº? ---
 const initDB = async () => {
     try {
         await pool.query(`
@@ -57,7 +57,7 @@ const initDB = async () => {
                 role VARCHAR(20) DEFAULT 'supplier'
             );
         `);
-        // Purchase Request (PR) - PR_ID è‡ªå‹•ç”¢ç”Ÿ
+        // Purchase Request (PR) - PR_ID ??ªå????¢ç??
         await pool.query(`
             CREATE TABLE IF NOT EXISTS purchase_requests (
                 id SERIAL PRIMARY KEY,
@@ -70,7 +70,7 @@ const initDB = async () => {
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             );
         `);
-        // Sourcing Request (SR) - å°æ‡‰åœ–ç‰‡èˆ‡ Word éœ€æ±‚
+        // Sourcing Request (SR) - å°????????????? Word ???æ±?
         await pool.query(`
             CREATE TABLE IF NOT EXISTS sourcing_requests (
                 id SERIAL PRIMARY KEY,
@@ -91,12 +91,12 @@ const initDB = async () => {
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             );
         `);
-        // Purchase Order (PO) - PO_ID è‡ªå‹•ç”¢ç”Ÿ
+        // Purchase Order (PO) - PO_ID ??ªå????¢ç??
         await pool.query(`
             CREATE TABLE IF NOT EXISTS purchase_orders (
                 id SERIAL PRIMARY KEY,
                 po_number VARCHAR(50) UNIQUE NOT NULL,
-                sr_reference VARCHAR(50), -- ä¾†è‡ª SR ID
+                sr_reference VARCHAR(50), -- ä¾???? SR ID
                 supplier_name VARCHAR(100),
                 material_code VARCHAR(50),
                 material_name VARCHAR(100),
@@ -138,15 +138,15 @@ const requireLogin = (req, res, next) => {
     next();
 };
 
-// --- API: ä¾›å‰ç«¯ AJAX æŸ¥è©¢ç”¨ ---
-// æ ¹æ“š PR Number æŠ“å–è³‡æ–™ (çµ¦ SR ç”¨)
+// --- API: ä¾????ç«? AJAX ??¥è©¢??? ---
+// ??¹æ?? PR Number ??????è³???? (çµ? SR ???)
 app.get('/api/pr/:pr_number', requireLogin, async (req, res) => {
     const result = await pool.query("SELECT * FROM purchase_requests WHERE pr_number = $1", [req.params.pr_number]);
     if (result.rows.length > 0) res.json(result.rows[0]);
     else res.status(404).json({ error: 'Not Found' });
 });
 
-// æ ¹æ“š SR Number æŠ“å–è³‡æ–™ (çµ¦ PO ç”¨)
+// ??¹æ?? SR Number ??????è³???? (çµ? PO ???)
 app.get('/api/sr/:sr_number', requireLogin, async (req, res) => {
     const result = await pool.query("SELECT * FROM sourcing_requests WHERE sr_number = $1", [req.params.sr_number]);
     if (result.rows.length > 0) res.json(result.rows[0]);
@@ -167,7 +167,7 @@ app.post('/login', async (req, res) => {
 });
 app.get('/logout', (req, res) => { req.session.destroy(); res.redirect('/login'); });
 
-// é¦–é  Dashboard (æ›´æ–°ç‰ˆ)
+// é¦???? Dashboard (??´æ?°ç??)
 app.get('/', requireLogin, async (req, res) => {
     // 1. Spending (Total PO Amount)
     const poSum = await pool.query("SELECT SUM(total_amount) as total FROM purchase_orders");
@@ -189,9 +189,9 @@ app.get('/create', requireLogin, (req, res) => res.render('create/menu', { user:
 // --- Create PR (Auto Generated ID) ---
 app.get('/create/pr', requireLogin, (req, res) => res.render('create/pr', { user: req.session.user }));
 
-// app.js ä¿®æ”¹éƒ¨åˆ†
+// app.js ä¿®æ?¹é?¨å??
 
-// 1. Create PR (Manual) - ä¿®æ”¹ Redirect
+// 1. Create PR (Manual) - ä¿®æ?? Redirect
 app.post('/create/pr', requireLogin, async (req, res) => {
     const { item_name, material_code, quantity, budget } = req.body;
     const pr_number = generateID('PR');
@@ -199,11 +199,11 @@ app.post('/create/pr', requireLogin, async (req, res) => {
         'INSERT INTO purchase_requests (pr_number, item_name, material_code, quantity, budget) VALUES ($1, $2, $3, $4, $5)',
         [pr_number, item_name, material_code, quantity, budget]
     );
-    // ä¿®æ”¹ï¼šå¸¶ä¸Š success=true å’Œå–®è™Ÿ
+    // ä¿®æ?¹ï??å¸¶ä?? success=true ?????®è??
     res.redirect(`/create?success=true&msg=Purchase Request Created&id=${pr_number}`);
 });
 
-// 2. Create PR (Excel) - ä¿®æ”¹ Redirect
+// 2. Create PR (Excel) - ä¿®æ?? Redirect
 app.post('/create/pr/upload', requireLogin, upload.single('excelFile'), async (req, res) => {
     try {
         const workbook = xlsx.readFile(req.file.path);
@@ -217,33 +217,33 @@ app.post('/create/pr/upload', requireLogin, upload.single('excelFile'), async (r
             );
             count++;
         }
-        // ä¿®æ”¹ï¼šå¸¶ä¸ŠåŒ¯å…¥ç­†æ•¸
+        // ä¿®æ?¹ï??å¸¶ä????¯å?¥ç?????
         res.redirect(`/create?success=true&msg=${count} PRs Imported Successfully&id=Batch`);
     } catch (e) { res.send("Error: " + e.message); }
 });
 
 // --- Create Sourcing Request (New) ---
 
-// app.js - ä¿®æ”¹ /create/sr çš„ GET è·¯ç”±
+// app.js - ä¿®æ?? /create/sr ??? GET è·¯ç??
 app.get('/create/sr', requireLogin, async (req, res) => {
-    // æ’ˆå–æ‰€æœ‰ PR è³‡æ–™ï¼Œæœ€æ–°çš„æŽ’å‰é¢
+    // ???????????? PR è³????ï¼??????°ç???????????
     const prResult = await pool.query("SELECT * FROM purchase_requests ORDER BY created_at DESC");
     
-    // å°‡ prs è³‡æ–™å‚³çµ¦å‰ç«¯
+    // å°? prs è³??????³çµ¦???ç«?
     res.render('create/sr', { 
         user: req.session.user, 
         prs: prResult.rows 
     });
 });
-// app.js - ä¿®æ­£ SR å»ºç«‹è·¯ç”± (è™•ç†ç©ºå€¼å•é¡Œ)
+// app.js - ä¿®æ­£ SR å»ºç??è·¯ç?? (??????ç©ºå?¼å??é¡?)
 app.post('/create/sr', requireLogin, async (req, res) => {
     const sr_number = generateID('SR');
-    const { supplier_id, title, pr_reference, project_duration, material_desc, material_code, quantity, price, total_price, incoterm, payment_term, delivery_date } = req.body;
+    const { supplier_id, title, pr_reference, project_duration, material_desc, material_code, quantity, price, total_price, incoterm, payment_term, delivery_date, start_date, end_date } = req.body;
     
     await pool.query(
         `INSERT INTO sourcing_requests 
         (sr_number, supplier_id, title, pr_reference, project_duration, material_desc, material_code, quantity, price, total_price, incoterm, payment_term, delivery_date)
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)`,
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)`,
         [
             sr_number, 
             supplier_id, 
@@ -252,55 +252,59 @@ app.post('/create/sr', requireLogin, async (req, res) => {
             project_duration, 
             material_desc, 
             material_code, 
-            // â˜… ä¿®æ­£é‡é»žï¼šå¦‚æžœæ¬„ä½æ˜¯ç©ºå­—ä¸²ï¼Œå°±è½‰ç‚º 0 æˆ– null
+            // ??? ä¿®æ­£???é»?ï¼?å¦????æ¬?ä½???¯ç©ºå­?ä¸²ï??å°±è????? 0 ??? null
             quantity || 0, 
             price || 0, 
             total_price || 0, 
             incoterm, 
             payment_term, 
-            delivery_date || null // æ—¥æœŸå¦‚æžœæ˜¯ç©ºå­—ä¸²ä¹Ÿè¦è½‰ null
+            delivery_date || null, // ??¥æ??å¦??????¯ç©ºå­?ä¸²ä??è¦?è½? null
+            start_date || null, 
+            end_date || null
         ]
     );
     res.redirect(`/create?success=true&msg=Sourcing Request Created&id=${sr_number}`);
 });
 
 // --- Create PO (Manual or From SR) ---
-// 1. ä¿®æ”¹ GET /create/po (æ’ˆå– SR è³‡æ–™çµ¦ä¸‹æ‹‰é¸å–®ç”¨)
+// 1. ä¿®æ?? GET /create/po (?????? SR è³????çµ¦ä???????¸å?®ç??)
 app.get('/create/po', requireLogin, async (req, res) => {
-    // æ’ˆå–ç‹€æ…‹ç‚º In Progress æˆ– Completed çš„ SRï¼Œè®“ä½¿ç”¨è€…é¸æ“‡
+    // ??????????????? In Progress ??? Completed ??? SRï¼?è®?ä½¿ç?¨è????¸æ??
     const srResult = await pool.query("SELECT * FROM sourcing_requests ORDER BY created_at DESC");
     
     res.render('create/po', { 
         user: req.session.user,
-        srs: srResult.rows // å‚³éž srs çµ¦å‰ç«¯
+        srs: srResult.rows // ??³é?? srs çµ¦å??ç«?
     });
 });
 
-// 4. Create PO - ä¿®æ”¹ Redirect
-// app.js - ä¿®æ­£ PO å»ºç«‹è·¯ç”± (è™•ç†ç©ºå€¼å•é¡Œ)
+// 4. Create PO - ä¿®æ?? Redirect
+// app.js - ä¿®æ­£ PO å»ºç??è·¯ç?? (??????ç©ºå?¼å??é¡?)
 app.post('/create/po', requireLogin, async (req, res) => {
     const po_number = generateID('PO');
-    const { sr_reference, supplier_name, material_code, material_name, quantity, unit_price, total_amount, delivery_date } = req.body;
+    const { sr_reference, supplier_name, material_code, material_name, quantity, unit_price, total_amount, delivery_date, start_date, end_date } = req.body;
     
     await pool.query(
         `INSERT INTO purchase_orders 
         (po_number, sr_reference, supplier_name, material_code, material_name, quantity, unit_price, total_amount, delivery_date)
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)`,
         [
             po_number, 
             sr_reference || null, 
             supplier_name, 
             material_code, 
             material_name, 
-            // â˜… ä¿®æ­£é‡é»žï¼šè™•ç†æ•¸å­—ç©ºå€¼
+            // ??? ä¿®æ­£???é»?ï¼?????????¸å??ç©ºå??
             quantity || 0, 
             unit_price || 0, 
             total_amount || 0, 
-            delivery_date || null
+            delivery_date || null,
+            start_date || null, 
+            end_date || null
         ]
     );
     
-    // å»ºç«‹å°æ‡‰çš„ç‰©æµç‹€æ…‹
+    // å»ºç??å°?????????©æ????????
     await pool.query('INSERT INTO delivery_status (po_number, material_code, status) VALUES ($1, $2, $3)', [po_number, material_code, 'Processing']);
     
     res.redirect(`/create?success=true&msg=Purchase Order Created&id=${po_number}`);
@@ -313,16 +317,16 @@ app.get('/status/delivery', requireLogin, async (req, res) => {
     const result = await pool.query(query);
     res.render('status/delivery', { user: req.session.user, deliveries: result.rows });
 });
-// 2. æ–°å¢ž GET /status (Status é¸å–®é é¢)
+// 2. ??°å?? GET /status (Status ??¸å?®é?????)
 app.get('/status', requireLogin, (req, res) => {
     res.render('status/menu', { user: req.session.user });
 });
-// 3. æ–°å¢ž GET /status/pr-po (PR-PO ç‹€æ…‹æŸ¥è©¢åŠŸèƒ½)
+// 3. ??°å?? GET /status/pr-po (PR-PO ????????¥è©¢??????)
 app.get('/status/pr-po', requireLogin, async (req, res) => {
-    // ä¿®æ”¹ app.js ä¸­ /status/pr-po çš„ SQLï¼ŒåŠ å…¥ pr.id
+    // ä¿®æ?? app.js ä¸? /status/pr-po ??? SQLï¼??????? pr.id
     let query = `
         SELECT 
-            pr.id as pr_id,  -- â˜… æ–°å¢žé€™è¡Œï¼šå–å‡º ID ä¾›å‰ç«¯é€£çµä½¿ç”¨
+            pr.id as pr_id,  -- ??? ??°å?????è¡?ï¼??????? ID ä¾????ç«¯é??çµ?ä½¿ç??
             pr.pr_number, pr.item_name, pr.status as pr_status, pr.created_at as pr_date,
             sr.sr_number, sr.status as sr_status,
             po.po_number, po.status as po_status,
@@ -333,7 +337,7 @@ app.get('/status/pr-po', requireLogin, async (req, res) => {
         LEFT JOIN delivery_status ds ON po.po_number = ds.po_number
     `;
     
-    // æœå°‹é‚è¼¯
+    // ???å°????è¼?
     let params = [];
     if (req.query.search) {
         query += ` WHERE pr.pr_number ILIKE $1 OR po.po_number ILIKE $1 OR sr.sr_number ILIKE $1`;
@@ -346,9 +350,35 @@ app.get('/status/pr-po', requireLogin, async (req, res) => {
     res.render('status/pr_po', { user: req.session.user, data: result.rows });
 });
 
-// app.js (æ–°å¢žéƒ¨åˆ†)
+// app.js - ·s¼W Delivery View ¸ô¥Ñ
 
-// 1. GET: é€²å…¥ç·¨è¼¯é é¢ (Edit Page)
+// GET: View Delivery Details (·s¼W)
+app.get('/status/delivery/:id', requireLogin, async (req, res) => {
+    const id = req.params.id;
+    
+    // ¼´¨úª«¬yª¬ºA¡A¨ÃÃöÁp PO ªí®æ¥HÀò¨ú§ó¦h¸ê°T (¨ÑÀ³°Ó¡B®É¶¡)
+    const query = `
+        SELECT 
+            ds.*,
+            po.supplier_name, po.quantity, po.total_amount,
+            po.start_date, po.end_date
+        FROM delivery_status ds
+        LEFT JOIN purchase_orders po ON ds.po_number = po.po_number
+        WHERE ds.id = $1
+    `;
+    
+    const result = await pool.query(query, [id]);
+    
+    if (result.rows.length > 0) {
+        res.render('status/delivery_view', { user: req.session.user, data: result.rows[0] });
+    } else {
+        res.send("Delivery Record Not Found");
+    }
+});
+
+// app.js (??°å????¨å??)
+
+// 1. GET: ??²å?¥ç·¨è¼¯é????? (Edit Page)
 app.get('/status/delivery/:id/edit', requireLogin, async (req, res) => {
     const id = req.params.id;
     const result = await pool.query("SELECT * FROM delivery_status WHERE id = $1", [id]);
@@ -360,22 +390,22 @@ app.get('/status/delivery/:id/edit', requireLogin, async (req, res) => {
     }
 });
 
-// 2. PUT: æ›´æ–°ç‹€æ…‹ (Update Logic)
+// 2. PUT: ??´æ?°ç????? (Update Logic)
 app.put('/status/delivery/:id', requireLogin, async (req, res) => {
     const id = req.params.id;
     const { status } = req.body;
     
-    // æ›´æ–°ç‹€æ…‹èˆ‡æ™‚é–“
+    // ??´æ?°ç??????????????
     await pool.query(
         "UPDATE delivery_status SET status = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2",
         [status, id]
     );
     
-    // è·³è½‰å›žåˆ—è¡¨ä¸¦é¡¯ç¤ºæˆåŠŸè¨Šæ¯
+    // è·³è????????è¡¨ä¸¦é¡¯ç¤º??????è¨????
     res.redirect('/status/delivery?success=true&msg=Status Updated Successfully');
 });
 
-// 3. DELETE: åˆªé™¤ç‹€æ…‹ (Delete Logic)
+// 3. DELETE: ??ªé?¤ç????? (Delete Logic)
 app.delete('/status/delivery/:id', requireLogin, async (req, res) => {
     const id = req.params.id;
     
@@ -384,18 +414,49 @@ app.delete('/status/delivery/:id', requireLogin, async (req, res) => {
     res.redirect('/status/delivery?success=true&msg=Record Deleted');
 });
 
-// app.js (æ–°å¢ž PR-PO ç·¨è¼¯/åˆªé™¤åŠŸèƒ½)
+// app.js
 
-// 1. GET: é€²å…¥ PR-PO ç·¨è¼¯é é¢
+// 1. GET: View Details (°ßÅª¸Ô±¡­¶)
+app.get('/status/pr-po/:id', requireLogin, async (req, res) => {
+    // ³o­Ó Query »Ý­n¼´¥X©Ò¦³Äæ¦ì¡A¥]§t start_date, end_date, price, budget µ¥
+    const query = `
+        SELECT 
+            pr.id as pr_id, pr.pr_number, pr.item_name, pr.material_code, pr.quantity, pr.budget, pr.status as pr_status,
+            sr.sr_number, sr.supplier_id, sr.title, sr.price, sr.status as sr_status, 
+            sr.start_date as sr_start, sr.end_date as sr_end,
+            po.po_number, po.supplier_name, po.total_amount, po.status as po_status,
+            po.start_date as po_start, po.end_date as po_end
+        FROM purchase_requests pr
+        LEFT JOIN sourcing_requests sr ON pr.pr_number = sr.pr_reference
+        LEFT JOIN purchase_orders po ON sr.sr_number = po.sr_reference
+        WHERE pr.id = $1
+    `;
+    
+    const result = await pool.query(query, [req.params.id]);
+    
+    if (result.rows.length > 0) {
+        // §PÂ_¬O§_¬° "Edit" ½Ð¨D (¦]¬° Edit ¸ò View ¸ô®|«Ü¹³¡A³o¬O¤@ºØÂ²³æªº°Ï¤À¤è¦¡¡A©Î§A«O«ù­ì¦³ªº /edit ¸ô¥Ñ)
+        // ³o¸Ì§Ú­Ìª½±µ render view ­¶­±
+        res.render('status/pr_po_view', { user: req.session.user, data: result.rows[0] });
+    } else {
+        res.send("Record not found");
+    }
+});
+
+// --- §ä¨ì­ì¥»ªº /status/pr-po/:id/edit ¨Ã´À´«¦¨³o¬q ---
+
+// 2. GET: ¶i¤J PR-PO ½s¿è­¶­± (§ó·sª© - ¥]§t¤é´ÁÄæ¦ì)
 app.get('/status/pr-po/:id/edit', requireLogin, async (req, res) => {
     const prId = req.params.id;
     
-    // ä½¿ç”¨èˆ‡åˆ—è¡¨é ç›¸åŒçš„ JOIN é‚è¼¯ï¼Œä½†åªéŽ–å®šå–®ä¸€ PR ID
+    // §ó·s SQL: ¦h¼´¥X sr_start, sr_end, po_start, po_end
     const query = `
         SELECT 
             pr.id as pr_id, pr.pr_number, pr.status as pr_status,
             sr.sr_number, sr.status as sr_status,
-            po.po_number, po.status as po_status
+            sr.start_date as sr_start, sr.end_date as sr_end, -- ·s¼W
+            po.po_number, po.status as po_status,
+            po.start_date as po_start, po.end_date as po_end  -- ·s¼W
         FROM purchase_requests pr
         LEFT JOIN sourcing_requests sr ON pr.pr_number = sr.pr_reference
         LEFT JOIN purchase_orders po ON sr.sr_number = po.sr_reference
@@ -411,37 +472,46 @@ app.get('/status/pr-po/:id/edit', requireLogin, async (req, res) => {
     }
 });
 
-// 2. PUT: åŒæ™‚æ›´æ–° PR, SR, PO çš„ç‹€æ…‹
+// --- §ä¨ì­ì¥»ªº app.put('/status/pr-po/:id') ¨Ã´À´«¦¨³o¬q ---
+
+// 3. PUT: ¦P®É§ó·s PR, SR, PO ªºª¬ºA»P¤é´Á (§ó·sª©)
 app.put('/status/pr-po/:id', requireLogin, async (req, res) => {
     const prId = req.params.id;
-    const { pr_status, sr_status, sr_number, po_status, po_number } = req.body;
+    // ±µ¦¬·sªºÄæ¦ì¡G¥]§tª¬ºA»P¤é´Á
+    const { pr_status, sr_status, sr_number, po_status, po_number, sr_start, sr_end, po_start, po_end } = req.body;
     
     try {
-        // 1. æ›´æ–° PR ç‹€æ…‹
+        // 1. §ó·s PR ª¬ºA
         await pool.query("UPDATE purchase_requests SET status = $1 WHERE id = $2", [pr_status, prId]);
         
-        // 2. å¦‚æžœæœ‰ SRï¼Œæ›´æ–° SR ç‹€æ…‹
+        // 2. ¦pªG¦³ SR¡A§ó·s SR ª¬ºA»P¤é´Á
         if (sr_number) {
-            await pool.query("UPDATE sourcing_requests SET status = $1 WHERE sr_number = $2", [sr_status, sr_number]);
+            await pool.query(
+                "UPDATE sourcing_requests SET status=$1, start_date=$2, end_date=$3 WHERE sr_number=$4", 
+                [sr_status, sr_start || null, sr_end || null, sr_number]
+            );
         }
         
-        // 3. å¦‚æžœæœ‰ POï¼Œæ›´æ–° PO ç‹€æ…‹
+        // 3. ¦pªG¦³ PO¡A§ó·s PO ª¬ºA»P¤é´Á
         if (po_number) {
-            await pool.query("UPDATE purchase_orders SET status = $1 WHERE po_number = $2", [po_status, po_number]);
+            await pool.query(
+                "UPDATE purchase_orders SET status=$1, start_date=$2, end_date=$3 WHERE po_number=$4", 
+                [po_status, po_start || null, po_end || null, po_number]
+            );
         }
         
-        res.redirect('/status/pr-po?success=true&msg=Process Status Updated');
+        res.redirect('/status/pr-po?success=true&msg=Process Status & Dates Updated');
     } catch (err) {
         res.send("Update Error: " + err.message);
     }
 });
 
-// 3. DELETE: åˆªé™¤ PR (æ•´æ¢æµç¨‹çš„æºé ­)
+// 3. DELETE: ??ªé?? PR (??´æ??æµ?ç¨????æº????)
 app.delete('/status/pr-po/:id', requireLogin, async (req, res) => {
     const prId = req.params.id;
     
-    // åˆªé™¤ PR å³å¯ï¼Œå› ç‚ºè¦–åœ–æ˜¯ LEFT JOIN PRï¼ŒPR æ¶ˆå¤±å‰‡æ•´åˆ—æ¶ˆå¤±
-    // (åœ¨çœŸå¯¦ ERP ä¸­å¯èƒ½æœƒåšæ›´åš´è¬¹çš„æª¢æŸ¥ï¼Œä½†ä½œæ¥­ç·´ç¿’é€™æ¨£æ˜¯å¯ä»¥çš„)
+    // ??ªé?? PR ??³å?¯ï???????ºè???????? LEFT JOIN PRï¼?PR æ¶?å¤±å????´å??æ¶?å¤?
+    // (??¨ç??å¯? ERP ä¸­å?¯è?½æ???????´å?´è¬¹???æª¢æ?¥ï??ä½?ä½?æ¥­ç·´ç¿????æ¨???¯å?¯ä»¥???)
     await pool.query("DELETE FROM purchase_requests WHERE id = $1", [prId]);
     
     res.redirect('/status/pr-po?success=true&msg=Purchase Request Deleted');
@@ -449,8 +519,39 @@ app.delete('/status/pr-po/:id', requireLogin, async (req, res) => {
 
 app.get('/supplier', requireLogin, (req, res) => res.render('supplier/index', { user: req.session.user }));
 app.get('/suppliers', requireLogin, async (req, res) => {
-     // ç°¡å–®çš„ä¾›æ‡‰å•†åˆ—è¡¨ (è‹¥è³‡æ–™åº«æœ‰ suppliers è¡¨å¯è®€å–)
+     // ç°¡å?®ç??ä¾??????????è¡? (??¥è?????åº«æ?? suppliers è¡¨å?¯è?????)
      res.send("Supplier List Placeholder");
+});
+
+// app.js - Profile Routes (­×§ïª©)
+
+// 1. GET: Read Profile (ÀËµø­Ó¤H¸ê®Æ - ¹w³]­¶­±)
+app.get('/profile', requireLogin, (req, res) => {
+    res.render('profile', { user: req.session.user });
+});
+
+// 2. GET: Edit Profile (¶i¤J­×§ïµe­±)
+app.get('/profile/edit', requireLogin, (req, res) => {
+    res.render('profile_edit', { user: req.session.user });
+});
+
+// 3. POST: Save Changes (Àx¦s¨Ã¸õÂà¦^ÀËµø­¶­±)
+app.post('/profile', requireLogin, async (req, res) => {
+    const { fullname, phone, email } = req.body;
+    const userId = req.session.user.id;
+    
+    // §ó·s¸ê®Æ®w
+    await pool.query(
+        "UPDATE users SET fullname=$1, phone=$2, email=$3 WHERE id=$4",
+        [fullname, phone, email, userId]
+    );
+    
+    // §ó·s session ¤¤ªº¨Ï¥ÎªÌ¸ê®Æ¡A½T«O­¶­±Åã¥Ü³Ì·s¸ê°T
+    const updatedUser = await pool.query("SELECT * FROM users WHERE id=$1", [userId]);
+    req.session.user = updatedUser.rows[0];
+    
+    // ¡¹ ­×§ï³o¸Ì¡G¦¨¥\«á¸õÂà¦^ Read Profile (/profile)¡A¨Ã±a¤W¦¨¥\°T®§
+    res.redirect('/profile?success=true&msg=Profile Updated Successfully');
 });
 
 app.listen(port, () => console.log(`http://localhost:${port}`));

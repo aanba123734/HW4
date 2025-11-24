@@ -28,7 +28,16 @@
                     <form action="/create/po" method="POST">
                         <div class="row mb-3">
                             <div class="col-md-6"><label>Supplier Name</label><input type="text" name="supplier_name" class="form-control border-dark"></div>
-                            <div class="col-md-6"><label>Delivery Date</label><input type="date" name="delivery_date" class="form-control border-dark"></div>
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label>Expected Start Date (Shipping)</label>
+                                    <input type="date" name="start_date" class="form-control border-dark">
+                                </div>
+                                <div class="col-md-6">
+                                    <label>Expected Arrival Date (End)</label>
+                                    <input type="date" name="end_date" class="form-control border-dark">
+                                </div>
+                            </div>
                         </div>
                         <div class="row mb-3">
                             <div class="col-md-4"><label>Material Code</label><input type="text" name="material_code" class="form-control border-dark"></div>
@@ -70,9 +79,16 @@
                             <div class="col-md-4"><label>Quantity</label><input type="number" name="quantity" id="sr_qty" class="form-control border-dark" readonly></div>
                             <div class="col-md-4"><label>Total Price</label><input type="number" name="total_amount" id="sr_total" class="form-control border-dark" readonly></div>
                         </div>
-                         <div class="row mb-3">
-                             <div class="col-md-6"><label>Delivery Date</label><input type="date" name="delivery_date" class="form-control border-dark"></div>
-                         </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label>Expected Start Date (Shipping)</label>
+                                <input type="date" name="start_date" class="form-control border-dark">
+                            </div>
+                            <div class="col-md-6">
+                                <label>Expected Arrival Date (End)</label>
+                                <input type="date" name="end_date" class="form-control border-dark">
+                            </div>
+                        </div>
                         <button type="submit" class="btn btn-retro rounded-pill">Create PO (From SR)</button>
                     </form>
                 </div>
