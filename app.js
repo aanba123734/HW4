@@ -208,6 +208,9 @@ app.post('/create/pr/upload', requireLogin, upload.single('excelFile'), async (r
     try {
         const workbook = xlsx.readFile(req.file.path);
         const data = xlsx.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]]);
+
+        // console.log("Excel Data Read:", data);
+
         let count = 0;
         for (let row of data) {
             const pr_number = generateID('PR');
@@ -224,26 +227,35 @@ app.post('/create/pr/upload', requireLogin, upload.single('excelFile'), async (r
 
 // --- Create Sourcing Request (New) ---
 
-// app.js - 修�?? /create/sr ??? GET 路�??
+// app.js - 修改 Create SR 頁面路由 (加入撈取供應商資料)
+
 app.get('/create/sr', requireLogin, async (req, res) => {
-    // ???????????? PR �????�??????��???????????
+    // 1. 撈取 PR 資料 (給 PR Reference 下拉選單用)
     const prResult = await pool.query("SELECT * FROM purchase_requests ORDER BY created_at DESC");
     
-    // �? prs �??????�給???�?
+    // 2. ★ 新增：撈取 Supplier 資料 (給 Supplier ID 下拉選單用)
+    const supResult = await pool.query("SELECT * FROM suppliers ORDER BY supplier_id ASC");
+    
     res.render('create/sr', { 
         user: req.session.user, 
-        prs: prResult.rows 
+        prs: prResult.rows,
+        suppliers: supResult.rows // ★ 將供應商資料傳給前端
     });
 });
-// app.js - 修正 SR 建�??路�?? (??????空�?��??�?)
+// app.js - 修正後的 Create SR
 app.post('/create/sr', requireLogin, async (req, res) => {
     const sr_number = generateID('SR');
     const { supplier_id, title, pr_reference, project_duration, material_desc, material_code, quantity, price, total_price, incoterm, payment_term, delivery_date, start_date, end_date } = req.body;
     
     await pool.query(
         `INSERT INTO sourcing_requests 
-        (sr_number, supplier_id, title, pr_reference, project_duration, material_desc, material_code, quantity, price, total_price, incoterm, payment_term, delivery_date)
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)`,
+        (
+            sr_number, supplier_id, title, pr_reference, project_duration, 
+            material_desc, material_code, quantity, price, total_price, 
+            incoterm, payment_term, delivery_date, 
+            start_date, end_date  -- ★ 務必確認這裡有補上這兩個欄位
+        )
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)`, // ★ 對應到 $15
         [
             sr_number, 
             supplier_id, 
@@ -252,15 +264,14 @@ app.post('/create/sr', requireLogin, async (req, res) => {
             project_duration, 
             material_desc, 
             material_code, 
-            // ??? 修正???�?�?�????�?�???�空�?串�??就�????? 0 ??? null
             quantity || 0, 
             price || 0, 
             total_price || 0, 
             incoterm, 
             payment_term, 
-            delivery_date || null, // ??��??�??????�空�?串�??�?�? null
-            start_date || null, 
-            end_date || null
+            delivery_date || null,
+            start_date || null, // $14
+            end_date || null    // $15
         ]
     );
     res.redirect(`/create?success=true&msg=Sourcing Request Created&id=${sr_number}`);
@@ -278,33 +289,35 @@ app.get('/create/po', requireLogin, async (req, res) => {
     });
 });
 
-// 4. Create PO - 修�?? Redirect
-// app.js - 修正 PO 建�??路�?? (??????空�?��??�?)
+// app.js - 修正後的 Create PO
 app.post('/create/po', requireLogin, async (req, res) => {
     const po_number = generateID('PO');
     const { sr_reference, supplier_name, material_code, material_name, quantity, unit_price, total_amount, delivery_date, start_date, end_date } = req.body;
     
     await pool.query(
         `INSERT INTO purchase_orders 
-        (po_number, sr_reference, supplier_name, material_code, material_name, quantity, unit_price, total_amount, delivery_date)
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)`,
+        (
+            po_number, sr_reference, supplier_name, material_code, material_name, 
+            quantity, unit_price, total_amount, delivery_date,
+            start_date, end_date -- ★ 務必確認這裡有補上這兩個欄位
+        )
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)`, // ★ 對應到 $11
         [
             po_number, 
             sr_reference || null, 
             supplier_name, 
             material_code, 
             material_name, 
-            // ??? 修正???�?�?????????��??空�??
             quantity || 0, 
             unit_price || 0, 
             total_amount || 0, 
             delivery_date || null,
-            start_date || null, 
-            end_date || null
+            start_date || null, // $10
+            end_date || null    // $11
         ]
     );
     
-    // 建�??�?????????��????????
+    // 同步建立物流狀態
     await pool.query('INSERT INTO delivery_status (po_number, material_code, status) VALUES ($1, $2, $3)', [po_number, material_code, 'Processing']);
     
     res.redirect(`/create?success=true&msg=Purchase Order Created&id=${po_number}`);
