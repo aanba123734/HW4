@@ -15,7 +15,12 @@
                 <li class="nav-item"><a class="nav-link" href="#">HELP</a></li>
             </ul>
             <div class="d-flex align-items-center">
-                <span class="me-3 fw-bold text-white">Hi, <%= user.username %></span>
+                <a href="/profile" class="text-decoration-none me-3 d-flex align-items-center text-white">
+                    <div class="bg-light text-dark rounded-circle d-flex justify-content-center align-items-center fw-bold" style="width: 35px; height: 35px; margin-right: 8px;">
+                        <%= user.username.charAt(0).toUpperCase() %>
+                    </div>
+                    <span class="fw-bold">Hi, <%= user.username %></span>
+                </a>
                 <a href="/logout" class="btn btn-sm btn-dark text-white rounded-pill">LOGOUT</a>
             </div>
         </div>

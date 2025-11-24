@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>View Order Details</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/style.css" rel="stylesheet">
+</head>
+<body>
+    <%- include('../partials/navbar') %>
+
+    <div class="container mt-4">
+        <div class="status-box">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2><i class="bi bi-file-text"></i> Order Details</h2>
+                <a href="/status/pr-po" class="btn btn-secondary rounded-pill">Back to List</a>
+            </div>
+
+            <div class="card mb-3 border-dark">
+                <div class="card-header bg-secondary text-white">Purchase Request (PR)</div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3"><strong>PR Number:</strong><br><%= data.pr_number %></div>
+                        <div class="col-md-3"><strong>Item Name:</strong><br><%= data.item_name %></div>
+                        <div class="col-md-3"><strong>Material Code:</strong><br><%= data.material_code %></div>
+                        <div class="col-md-3"><strong>Quantity:</strong><br><%= data.quantity %></div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-3"><strong>Budget:</strong><br>$<%= data.budget %></div>
+                        <div class="col-md-3"><strong>Status:</strong><br><span class="badge bg-secondary"><%= data.pr_status %></span></div>
+                    </div>
+                </div>
+            </div>
+
+            <% if (data.sr_number) { %>
+            <div class="card mb-3 border-dark">
+                <div class="card-header bg-info text-dark">Sourcing Request (SR)</div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3"><strong>SR Number:</strong><br><%= data.sr_number %></div>
+                        <div class="col-md-3"><strong>Supplier ID:</strong><br><%= data.supplier_id %></div>
+                        <div class="col-md-3"><strong>Title:</strong><br><%= data.title %></div>
+                        <div class="col-md-3"><strong>Price Quote:</strong><br>$<%= data.price %></div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-3"><strong>Start Date:</strong><br><%= data.sr_start ? data.sr_start.toISOString().split('T')[0] : '-' %></div>
+                        <div class="col-md-3"><strong>Arrival Date:</strong><br><%= data.sr_end ? data.sr_end.toISOString().split('T')[0] : '-' %></div>
+                        <div class="col-md-3"><strong>Status:</strong><br><span class="badge bg-info text-dark"><%= data.sr_status %></span></div>
+                    </div>
+                </div>
+            </div>
+            <% } %>
+
+            <% if (data.po_number) { %>
+            <div class="card mb-3 border-dark">
+                <div class="card-header bg-primary text-white">Purchase Order (PO)</div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3"><strong>PO Number:</strong><br><%= data.po_number %></div>
+                        <div class="col-md-3"><strong>Supplier Name:</strong><br><%= data.supplier_name %></div>
+                        <div class="col-md-3"><strong>Total Amount:</strong><br>$<%= data.total_amount %></div>
+                        <div class="col-md-3"><strong>Status:</strong><br><span class="badge bg-primary"><%= data.po_status %></span></div>
+                    </div>
+                    <div class="row mt-3">
+                         <div class="col-md-3"><strong>Start Shipping:</strong><br><%= data.po_start ? data.po_start.toISOString().split('T')[0] : '-' %></div>
+                        <div class="col-md-3"><strong>Est. Arrival:</strong><br><%= data.po_end ? data.po_end.toISOString().split('T')[0] : '-' %></div>
+                    </div>
+                </div>
+            </div>
+            <% } %>
+
+        </div>
+    </div>
+</body>
+</html>

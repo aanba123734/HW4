@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>View Delivery Details</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/style.css" rel="stylesheet">
+</head>
+<body>
+    <%- include('../partials/navbar') %>
+
+    <div class="container mt-4">
+        <div class="status-box">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2><i class="bi bi-truck"></i> Delivery Details</h2>
+                <a href="/status/delivery" class="btn btn-secondary rounded-pill">Back to List</a>
+            </div>
+
+            <div class="card mb-4 border-dark">
+                <div class="card-header bg-warning text-dark fw-bold">Current Logistics Status</div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4"><strong>Tracking ID:</strong><br>#<%= data.id %></div>
+                        <div class="col-md-4"><strong>Material Code:</strong><br><%= data.material_code %></div>
+                        <div class="col-md-4">
+                            <strong>Current Status:</strong><br>
+                            <% if(data.status === 'On Track') { %>
+                                <span class="badge bg-warning text-dark">? On Track</span>
+                            <% } else if (data.status === 'Late') { %>
+                                <span class="badge bg-danger">Late</span>
+                            <% } else if (data.status === 'Delivered') { %>
+                                <span class="badge bg-success">Delivered</span>
+                            <% } else { %>
+                                <span class="badge bg-secondary"><%= data.status %></span>
+                            <% } %>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-4"><strong>Last Updated:</strong><br><%= data.updated_at ? data.updated_at.toISOString().split('T')[0] : '-' %></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mb-3 border-dark">
+                <div class="card-header bg-primary text-white">Associated Purchase Order</div>
+                <div class="card-body">
+                    <% if (data.supplier_name) { %>
+                        <div class="row">
+                            <div class="col-md-3"><strong>PO Number:</strong><br><%= data.po_number %></div>
+                            <div class="col-md-3"><strong>Supplier:</strong><br><%= data.supplier_name %></div>
+                            <div class="col-md-3"><strong>Quantity:</strong><br><%= data.quantity %></div>
+                            <div class="col-md-3"><strong>Total Amount:</strong><br>$<%= data.total_amount %></div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-md-6">
+                                <strong>Expected Start Date:</strong><br>
+                                <%= data.start_date ? data.start_date.toISOString().split('T')[0] : 'Not Set' %>
+                            </div>
+                            <div class="col-md-6">
+                                <strong>Expected Arrival Date:</strong><br>
+                                <%= data.end_date ? data.end_date.toISOString().split('T')[0] : 'Not Set' %>
+                            </div>
+                        </div>
+                    <% } else { %>
+                        <p class="text-muted mb-0">No detailed PO information found for PO Number: <%= data.po_number %></p>
+                    <% } %>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</body>
+</html>

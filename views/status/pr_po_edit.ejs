@@ -54,8 +54,15 @@
                                         <input type="hidden" name="sr_number" value="<%= data.sr_number %>">
                                     <% } %>
                                 </div>
+                                <div class="mb-3">
+                                    <label>Start Date</label>
+                                    <input type="date" name="sr_start" class="form-control" value="<%= data.sr_start ? data.sr_start.toISOString().split('T')[0] : '' %>">
+                                </div>
+                                <div class="mb-3">
+                                    <label>End Date</label>
+                                    <input type="date" name="sr_end" class="form-control" value="<%= data.sr_end ? data.sr_end.toISOString().split('T')[0] : '' %>">
+                                </div>
                             </div>
-
                             <div class="col-md-4">
                                 <h5 class="text-secondary">Purchase Order</h5>
                                 <div class="mb-3">
@@ -72,6 +79,14 @@
                                     <% if(data.po_number) { %>
                                         <input type="hidden" name="po_number" value="<%= data.po_number %>">
                                     <% } %>
+                                </div>
+                                <div class="mb-3">
+                                    <label>Start Shipping</label>
+                                    <input type="date" name="po_start" class="form-control" value="<%= data.po_start ? data.po_start.toISOString().split('T')[0] : '' %>">
+                                </div>
+                                <div class="mb-3">
+                                    <label>Est. Arrival</label>
+                                    <input type="date" name="po_end" class="form-control" value="<%= data.po_end ? data.po_end.toISOString().split('T')[0] : '' %>">
                                 </div>
                             </div>
                         </div>
